@@ -5,6 +5,7 @@ import solver
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
+app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 @app.route("/")
 def hello():
