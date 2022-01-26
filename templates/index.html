@@ -1,0 +1,107 @@
+<!doctype html>
+<title>Wordle solver</title>
+
+<style>
+    input[type="text"] {
+        text-transform: lowercase;
+    }
+    
+    .pos_inc {
+        width: 20px
+    }
+    
+    .pos_exc {
+        width: 60px
+    }
+</style>
+
+<script>
+    function getWords() {
+
+        let exclude_pos = []
+        document.querySelectorAll(".pos_exc").forEach(ele => {
+            let pos = ele.name.replace('exclude_pos_', '')
+            ele.value.match(/./g) && ele.value.match(/./g).forEach(char => {
+                let d = {}
+                d[pos] = char
+                exclude_pos.push(d)
+            })
+        })
+
+        let include_pos = {}
+        document.querySelectorAll(".pos_inc").forEach(ele => {
+            let pos = ele.name.replace('include_pos_', '')
+            ele.value.match(/./g) && ele.value.match(/./g).forEach(char => {
+                include_pos[pos] = char
+            })
+        })
+
+
+        let params = {
+            include: document.querySelector("[name=include]").value.toLowerCase(),
+            exclude: document.querySelector("[name=exclude]").value.toLowerCase(),
+            exclude_pos: JSON.stringify(exclude_pos),
+            include_pos: JSON.stringify(include_pos),
+        }
+        let qs = "?" + Object.keys(params).map(k => k + "=" + encodeURIComponent(params[k])).join("&")
+
+        fetch("/solve" + qs)
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector("#words").innerHTML = ''
+                data.words.forEach(word => {
+                    let li = document.createElement("li")
+                    li.innerText = word
+                    document.querySelector("#words").appendChild(li)
+                })
+            })
+    }
+
+    let lastvals = "BEGIN"
+    setInterval(() => {
+        let newvals = ""
+        document.querySelectorAll("input").forEach(ele => {
+            newvals += ele.value
+        })
+        if (newvals != lastvals) {
+            lastvals = newvals
+            getWords()
+        }
+    }, 100)
+</script>
+
+<section class="content">
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    <table>
+        <tr>
+            <td>Letters to include</td>
+            <td><input type="text" name="include" pattern="[a-z]"></td>
+        </tr>
+        <tr>
+            <td>Letters to exclude </td>
+            <td><input type="text" name="exclude" pattern="[a-z]"></td>
+        </tr>
+
+        {% for n in range(1,6) %}
+        <tr>
+            <td>Position {{n}} exclude </td>
+            <td><input type="text" class="pos_exc" name="exclude_pos_{{n-1}}" pattern="[a-z]"></td>
+        </tr>
+        {% endfor %} {% for n in range(1,6) %}
+        <tr>
+            <td>Position {{n}}</td>
+            <td><input type="text" class="pos_inc" maxlength="1" name="include_pos_{{n-1}}" pattern="[a-z]"></td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+
+
+
+    <ul id="words">
+
+    </ul>
+</section>
