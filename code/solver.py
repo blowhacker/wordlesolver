@@ -8,15 +8,28 @@ wordlist = data.split("\n")
 
 
 def char_frequency(words):
-    txt = "".join(words)
     freq = {}
-    for char in txt:
-        if char in freq:
-            freq[char] += 1
-        else:
-            freq[char] = 1
+    for word in words:
+        for char in word:
+            if char in freq:
+                freq[char] += 1
+            else:
+                freq[char] = 1
 
     return dict(sorted(freq.items(), key=lambda item: -item[1]))
+
+
+def char_frequency_by_position(words):
+    freq = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}}
+    for word in words:
+        for i, char in enumerate(word):
+            if char in freq[i]:
+                freq[i][char] += 1
+            else:
+                freq[i][char] = 1
+    for i in range(0, 5):
+        freq[i] = dict(sorted(freq[i].items(), key=lambda item: -item[1]))
+    return freq
 
 
 def filter_dont_match(words, dont_match):
@@ -72,12 +85,12 @@ def filter_known_positions_not(words, known_positions_not):
 
 
 def sort_by_frequency(words):
-    freq = char_frequency(words)
+    freq = char_frequency_by_position(words)
     ranked = {}
     for word in words:
         ranked[word] = 0
-        chars = set(word)
-        for char in chars:
-            ranked[word] += freq[char] * len(chars)
+        num_letters = len(set(word))
+        for i,char in enumerate(word):
+            ranked[word] += freq[i][char] * num_letters
 
     return dict(sorted(ranked.items(), key=lambda item: -item[1]))
