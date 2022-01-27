@@ -42,6 +42,10 @@
         width: 20px;
         display: inline-block;
     } */
+    
+    #loading {
+        color: red;
+    }
 </style>
 
 <script>
@@ -74,6 +78,8 @@
         }
         let qs = "?" + Object.keys(params).map(k => k + "=" + encodeURIComponent(params[k])).join("&")
 
+        document.getElementById('loading').innerHTML = "loading..."
+
         fetch("/solve" + qs)
             .then(response => response.json())
             .then(data => {
@@ -84,6 +90,7 @@
                     document.querySelector("#words").appendChild(li)
                 })
                 document.querySelector("#word_count").innerHTML = new Intl.NumberFormat('en-GB').format(data.words.length)
+                document.getElementById('loading').innerHTML = ""
             })
     }
 
@@ -132,7 +139,7 @@
     </table>
 
 
-    <h3>Words <span id="word_count"></span></h1>
+    <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
         <ul id="words">
 
         </ul>

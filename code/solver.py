@@ -76,7 +76,7 @@ def sort_by_frequency(words):
     ranked = {}
     for word in words:
         ranked[word] = 0
-        chars = set([char for char in word])
+        chars = set(word)
         for char in chars:
             ranked[word] += freq[char] * len(chars)
     
