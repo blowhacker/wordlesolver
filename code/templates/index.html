@@ -98,10 +98,25 @@
     let lastvals = "BEGIN"
     setInterval(() => {
         let newvals = ""
+
+        document.querySelectorAll('.pos_exc').forEach(ele => {
+            let eleInc = document.querySelector('input[name=include]')
+            let val = ele.value.replace(/[^a-z]/ig, '');
+            [...new Set(val)].forEach(char => {
+                if (eleInc.value.indexOf(char) == -1) {
+                    eleInc.value += char
+                }
+            })
+        })
+
         document.querySelectorAll("input").forEach(ele => {
-            ele.value = ele.value.replace(/[^a-z]/ig, '')
+            let newVal = ele.value.replace(/[^a-z]/ig, '')
+            newVal = [...new Set(newVal)].join('')
+            ele.value = newVal
             newvals += ele.value
         })
+
+
         if (newvals != lastvals) {
             lastvals = newvals
             getWords()
