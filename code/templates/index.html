@@ -99,6 +99,7 @@
     setInterval(() => {
         let newvals = ""
         document.querySelectorAll("input").forEach(ele => {
+            ele.value = ele.value.replace(/[^a-z]/ig, '')
             newvals += ele.value
         })
         if (newvals != lastvals) {
