@@ -52,6 +52,7 @@
 <script>
     function getWords() {
 
+        let strInclude = ''
         let exclude_pos = []
         document.querySelectorAll(".pos_exc").forEach(ele => {
             let pos = ele.name.replace('exclude_pos_', '')
@@ -59,6 +60,7 @@
                 let d = {}
                 d[pos] = char
                 exclude_pos.push(d)
+                strInclude += char
             })
         })
 
@@ -70,9 +72,8 @@
             })
         })
 
-
         let params = {
-            include: document.querySelector("[name=include]").value.toLowerCase(),
+            include: [...new Set(strInclude)].join('').toLowerCase(),
             exclude: document.querySelector("[name=exclude]").value.toLowerCase(),
             exclude_pos: JSON.stringify(exclude_pos),
             include_pos: JSON.stringify(include_pos),
@@ -99,16 +100,6 @@
     setInterval(() => {
         let newvals = ""
 
-        document.querySelectorAll('.pos_exc').forEach(ele => {
-            let eleInc = document.querySelector('input[name=include]')
-            let val = ele.value.replace(/[^a-z]/ig, '');
-            [...new Set(val)].forEach(char => {
-                if (eleInc.value.indexOf(char) == -1) {
-                    eleInc.value += char
-                }
-            })
-        })
-
         document.querySelectorAll("input").forEach(ele => {
             let newVal = ele.value.replace(/[^a-z]/ig, '')
             newVal = [...new Set(newVal)].join('')
@@ -129,10 +120,6 @@
         {% block header %}{% endblock %}
     </header>
     <table>
-        <tr>
-            <td>Letters to include</td>
-            <td><input type="text" name="include" pattern="[a-z]"></td>
-        </tr>
         <tr>
             <td>Letters to exclude </td>
             <td><input type="text" name="exclude" pattern="[a-z]"></td>
