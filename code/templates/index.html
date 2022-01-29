@@ -83,12 +83,12 @@
 
         let eleLoading = document.getElementById('loading')
         eleLoading.innerHTML = "loading..."
-        eleLoading.setAttribute('data-nonce', params.nonce)
 
         fetch("/solve" + qs)
             .then(response => response.json())
             .then(data => {
-                if (eleLoading.getAttribute('data-nonce') != data.nonce) {
+                if (params.nonce != data.nonce) {
+                    console.log("stale nonce")
                     return
                 }
                 document.querySelector("#words").innerHTML = ''
