@@ -18,13 +18,13 @@ def hello():
 def solve():
     args = request.args
     nonce = args.get("nonce", default=datetime.now().timestamp())
-    must_match = args.get("include", default="")
-    dont_match = args.get("exclude", default="")
+    must_match = args.get("include", default="").lower()
+    dont_match = args.get("exclude", default="").lower()
 
-    known_positions_not = args.get("exclude_pos", default="{}")
+    known_positions_not = args.get("exclude_pos", default="{}").lower()
     known_positions_not = json.loads(known_positions_not)
 
-    known_positions = args.get("include_pos", default="{}")
+    known_positions = args.get("include_pos", default="{}").lower()
     known_positions = json.loads(known_positions)
 
     filtered = solver.filter_dont_match(solver.wordlist, dont_match)
