@@ -1,3 +1,4 @@
+from datetime import datetime
 from email.policy import default
 import json
 from flask import Flask, request, render_template
@@ -16,6 +17,7 @@ def hello():
 @app.route("/solve")
 def solve():
     args = request.args
+    nonce = args.get("nonce", default=datetime.now().timestamp())
     must_match = args.get("include", default="")
     dont_match = args.get("exclude", default="")
 
@@ -34,4 +36,4 @@ def solve():
 
     filtered = solver.sort_by_frequency(filtered)
 
-    return {"words": list(filtered)}
+    return {"words": list(filtered), "nonce": nonce}

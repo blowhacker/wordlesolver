@@ -77,14 +77,20 @@
             exclude: document.querySelector("[name=exclude]").value.toLowerCase(),
             exclude_pos: JSON.stringify(exclude_pos),
             include_pos: JSON.stringify(include_pos),
+            nonce: `${new Date() / 1}${Math.random()}`
         }
         let qs = "?" + Object.keys(params).map(k => k + "=" + encodeURIComponent(params[k])).join("&")
 
-        document.getElementById('loading').innerHTML = "loading..."
+        let eleLoading = document.getElementById('loading')
+        eleLoading.innerHTML = "loading..."
+        eleLoading.setAttribute('data-nonce', params.nonce)
 
         fetch("/solve" + qs)
             .then(response => response.json())
             .then(data => {
+                if (eleLoading.getAttribute('data-nonce') != data.nonce) {
+                    return
+                }
                 document.querySelector("#words").innerHTML = ''
                 data.words.forEach(word => {
                     let li = document.createElement("li")
@@ -92,7 +98,7 @@
                     document.querySelector("#words").appendChild(li)
                 })
                 document.querySelector("#word_count").innerHTML = new Intl.NumberFormat('en-GB').format(data.words.length)
-                document.getElementById('loading').innerHTML = ""
+                eleLoading.innerHTML = ""
             })
     }
 
