@@ -84,13 +84,22 @@ def filter_known_positions_not(words, known_positions_not):
     return set(filtered2)
 
 
-def sort_by_frequency(words):
-    freq = char_frequency_by_position(words)
-    ranked = {}
-    for word in words:
-        ranked[word] = 0
-        num_letters = len(set(word))
-        for i, char in enumerate(word):
-            ranked[word] += freq[i][char] * num_letters
+def sort_by_frequency(words, by_position=False):
+    if by_position:
+        freq = char_frequency_by_position(words)
+        ranked = {}
+        for word in words:
+            ranked[word] = 0
+            num_letters = len(set(word))
+            for i, char in enumerate(word):
+                ranked[word] += freq[i][char] * num_letters
+    else:
+        freq = char_frequency(words)
+        ranked = {}
+        for word in words:
+            ranked[word] = 0
+            num_letters = len(set(word))
+            for char in word:
+                ranked[word] += freq[char] * num_letters
 
     return dict(sorted(ranked.items(), key=lambda item: -item[1]))

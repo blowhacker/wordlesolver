@@ -63,6 +63,7 @@
             exclude: document.querySelector("[name=exclude]").value.toLowerCase(),
             exclude_pos: JSON.stringify(exclude_pos),
             include_pos: JSON.stringify(include_pos),
+            sort_by_pos: document.querySelector("input[name=sort_by]:checked").value,
             nonce: `${new Date() / 1}${Math.random()}`
         }
         let qs = "?" + Object.keys(params).map(k => k + "=" + encodeURIComponent(params[k])).join("&")
@@ -99,6 +100,7 @@
             newvals += ele.value
         })
 
+        newvals += document.querySelector("input[name=sort_by]:checked").value
 
         if (newvals != lastvals) {
             lastvals = newvals
@@ -136,6 +138,10 @@
 
 
     <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
+        <div>
+            <input type="radio" name="sort_by" id="sort_by_frequency" checked value="byfreq"><label for="sort_by_frequency">Sort by letter frequency</label>
+            <input type="radio" name="sort_by" id="sort_by_position" value="bypos"><label for="sort_by_position">Sort by letter position and frequency</label>
+        </div>
         <ul id="words">
 
         </ul>

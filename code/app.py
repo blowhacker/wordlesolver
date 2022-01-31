@@ -34,6 +34,8 @@ def solve():
 
     filtered = solver.filter_known_positions_not(filtered, known_positions_not)
 
-    filtered = solver.sort_by_frequency(filtered)
+    sort_by_pos = args.get("sort_by_pos", default="byfreq") == "bypos"
+
+    filtered = solver.sort_by_frequency(filtered, sort_by_pos)
 
     return {"words": list(filtered), "nonce": nonce}
