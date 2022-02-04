@@ -116,9 +116,31 @@
 
     document.onkeydown = function(e) {
         e = e || window.event;
-        switch (e.which || e.keyCode) {
+        let keyCode = e.which || e.keyCode
+        console.log(keyCode)
+        switch (keyCode) {
             case 27: //Your Code Here (13 is ascii code for 'ENTER')
                 reset()
+                break;
+            case 49:
+            case 50:
+            case 51:
+            case 52:
+            case 53:
+                document.querySelectorAll('.pos_exc')[keyCode - 49].focus()
+                break;
+            case 54:
+            case 55:
+            case 56:
+            case 57:
+                document.querySelectorAll('.pos_inc')[keyCode - 54].focus()
+                break;
+            case 48:
+                document.querySelectorAll('.pos_inc')[4].focus()
+                break;
+            case 32:
+                document.querySelector("input[name=exclude]").focus()
+                break;
         }
     }
 </script>
