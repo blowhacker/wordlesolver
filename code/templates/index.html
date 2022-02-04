@@ -109,7 +109,7 @@
     }, 100)
 
     function reset() {
-        document.querySelectorAll("input").forEach(ele => {
+        document.querySelectorAll("input:not([type=radio])").forEach(ele => {
             ele.value = ""
         })
     }
