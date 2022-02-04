@@ -107,6 +107,20 @@
             getWords()
         }
     }, 100)
+
+    function reset() {
+        document.querySelectorAll("input").forEach(ele => {
+            ele.value = ""
+        })
+    }
+
+    document.onkeydown = function(e) {
+        e = e || window.event;
+        switch (e.which || e.keyCode) {
+            case 27: //Your Code Here (13 is ascii code for 'ENTER')
+                reset()
+        }
+    }
 </script>
 
 <section class="content">
@@ -136,12 +150,14 @@
 
     </table>
 
+    <button onclick="reset()">Reset [Esc key]</button>
 
     <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
         <div>
             <input type="radio" name="sort_by" id="sort_by_position" checked value="bypos"><label for="sort_by_position">Sort by letter position and frequency</label>
             <input type="radio" name="sort_by" id="sort_by_frequency" value="byfreq"><label for="sort_by_frequency">Sort by letter frequency</label>
         </div>
+
         <ul id="words">
 
         </ul>
