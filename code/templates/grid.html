@@ -203,7 +203,16 @@
         let exclude = ""
         document.querySelectorAll('.grey').forEach(ele => {
             let char = ele.innerText.toLowerCase()
+            let goodToAdd = false
             if (Object.values(include_pos).indexOf(char) == -1) {
+                goodToAdd = true
+            }
+            exclude_pos.forEach(item => {
+                if (Object.values(item)[0] == char) {
+                    goodToAdd = false
+                }
+            })
+            if (goodToAdd) {
                 exclude += char
             }
         })
