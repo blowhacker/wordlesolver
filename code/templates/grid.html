@@ -209,8 +209,10 @@
 
         let exclude = ""
         document.querySelectorAll('.grey').forEach(ele => {
-            let pos = parseInt(ele.id.split('_')[2])
-            exclude += ele.innerText.toLowerCase()
+            let char = ele.innerText.toLowerCase()
+            if (Object.values(include_pos).indexOf(char) == -1) {
+                exclude += char
+            }
         })
 
 
