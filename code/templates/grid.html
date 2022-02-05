@@ -108,9 +108,16 @@
                 //match row above if green
             let eleAbove = document.getElementById(`cell_${i - 1}_${j}`)
             if (eleAbove) {
-                if (eleAbove.classList.contains('green')) {
+                if (ele.innerText == eleAbove.innerText && eleAbove.classList.contains('green')) {
                     ele.classList.add('green')
                     ele.classList.remove('grey')
+                } else {
+                    let oranges = []
+                    document.querySelectorAll('.orange').forEach(e => oranges.push(e.innerText))
+                    if (oranges.indexOf(ele.innerText) !== -1) {
+                        cssGridColourClasses.forEach(c => ele.classList.remove(c))
+                        ele.classList.add('orange')
+                    }
                 }
             }
 
