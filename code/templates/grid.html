@@ -266,7 +266,8 @@
     setInterval(getWords, 100)
     setInterval(() => {
         [i, j] = getIJ(cursorPos)
-        document.getElementById('iphone_keyboard_show').style.top = document.getElementById(`cell_${i}_1`).getBoundingClientRect().y
+        document.getElementById('iphone_keyboard_show').style.top =
+            document.getElementById(`cell_${i}_1`).getBoundingClientRect().y + "px"
 
     }, 100)
 
