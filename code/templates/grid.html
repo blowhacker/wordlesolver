@@ -109,11 +109,22 @@
     document.onkeydown = function(e) {
         e = e || window.event;
         let keyCode = e.which || e.keyCode
-        console.log(keyCode)
 
         if (keyCode <= "Z".charCodeAt(0) && keyCode >= "A".charCodeAt(0)) {
             [i, j] = getIJ(cursorPos)
-            document.getElementById(`cell_${i}_${j}`).innerHTML = String.fromCharCode(keyCode);
+            let ele = document.getElementById(`cell_${i}_${j}`)
+            ele.innerHTML = String.fromCharCode(keyCode);
+            ele.classList.add('grey')
+                //match row above if green
+            let eleAbove = document.getElementById(`cell_${i - 1}_${j}`)
+            if (eleAbove) {
+                if (eleAbove.classList.contains('green')) {
+                    ele.classList.add('green')
+                    ele.classList.remove('grey')
+                }
+            }
+
+
             cursorPos++
             if (cursorPos > rows * cols) {
                 cursorPos = rows * cols
