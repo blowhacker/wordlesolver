@@ -14,6 +14,10 @@ def hello():
     return render_template("index.html")
 
 
+@app.route("/grid")
+def grid():
+    return render_template("grid.html")
+
 @app.route("/solve")
 def solve():
     args = request.args
