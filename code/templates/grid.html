@@ -51,18 +51,9 @@
     button.reset {
         margin-top: 20px;
     }
-    
-    #dummy_input {
-        width: 100%;
-        height: 25px;
-        /* border: 0; */
-    }
 </style>
 
 <body>
-    <div>
-        <input id="dummy_input" />
-    </div>
     <div id="main"></div>
 
     <button class="reset" onclick="reset()">Reset [Esc key]</button>
@@ -267,11 +258,6 @@
     }
 
     setInterval(getWords, 100)
-        // setInterval(() => {
-        //     // ele.style.visibility = none
-        //     let ele = document.getElementById('dummy_input')
-        //     ele.focus()
-        // }, 10)
 
     function reset() {
         window.location.href = window.location.href;
