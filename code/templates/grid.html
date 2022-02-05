@@ -35,7 +35,7 @@
         font-size: 40px;
         padding-left: 10px;
         text-align: center;
-        /* border: 1px solid; */
+        user-select: none;
     }
     
     .cell {
@@ -65,15 +65,30 @@
 
 <body>
     <div id="main"></div>
+
+    <button onclick="reset()">Reset [Esc key]</button>
+
+    <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
+        <div>
+            <input type="radio" name="sort_by" id="sort_by_position" checked value="bypos"><label for="sort_by_position">Sort by letter position and frequency</label>
+            <input type="radio" name="sort_by" id="sort_by_frequency" value="byfreq"><label for="sort_by_frequency">Sort by letter frequency</label>
+        </div>
+
+        <ul id="words">
+
+        </ul>
 </body>
 
 <script>
+    const rows = 6;
+    const cols = 5;
+
     function drawGrid() {
         let grid = document.createElement('table')
         let str = ''
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < rows; i++) {
             str += `<tr id="row_${i}">`
-            for (let j = 0; j < 5; j++) {
+            for (let j = 0; j < cols; j++) {
                 str += `<td id="cell_${i}_${j}" class="td_cell"></td>`
             }
             str += '</tr>'
@@ -84,8 +99,8 @@
     drawGrid()
 
     function getIJ(cursorPos) {
-        let i = Math.floor(cursorPos / 5)
-        let j = cursorPos % 5
+        let i = Math.floor(cursorPos / cols)
+        let j = cursorPos % cols
 
         return [i, j]
     }
@@ -100,8 +115,8 @@
             [i, j] = getIJ(cursorPos)
             document.getElementById(`cell_${i}_${j}`).innerHTML = String.fromCharCode(keyCode);
             cursorPos++
-            if (cursorPos > 25) {
-                cursorPos = 25
+            if (cursorPos > rows * cols) {
+                cursorPos = rows * cols
             }
         }
         if (keyCode == 8) { //backspace
@@ -151,4 +166,74 @@
             rotateStyle(ele)
         }, false);
     })
+
+
+    lastQs = ""
+
+    function getWords() {
+
+        let strInclude = ''
+        let exclude_pos = []
+
+        document.querySelectorAll('.orange').forEach(ele => {
+            let pos = parseInt(ele.id.split('_')[2])
+            let d = {}
+            d[pos] = ele.innerText.toLowerCase()
+            exclude_pos.push(d)
+            strInclude += ele.innerText.toLowerCase()
+        })
+
+        let include_pos = {}
+        document.querySelectorAll('.green').forEach(ele => {
+            let pos = parseInt(ele.id.split('_')[2])
+            include_pos[pos] = ele.innerText.toLowerCase()
+        })
+
+        let exclude = ""
+        document.querySelectorAll('.grey').forEach(ele => {
+            let pos = parseInt(ele.id.split('_')[2])
+            exclude += ele.innerText.toLowerCase()
+        })
+
+
+        let params = {
+            include: [...new Set(strInclude)].join('').toLowerCase(),
+            exclude: exclude,
+            exclude_pos: JSON.stringify(exclude_pos),
+            include_pos: JSON.stringify(include_pos),
+            sort_by_pos: document.querySelector("input[name=sort_by]:checked").value,
+        }
+
+        if (JSON.stringify(params) === lastQs) {
+            return
+        }
+        lastQs = JSON.stringify(params)
+
+        params['nonce'] = `${new Date() / 1}${Math.random()}`
+
+
+        let qs = "?" + Object.keys(params).map(k => k + "=" + encodeURIComponent(params[k])).join("&")
+
+        let eleLoading = document.getElementById('loading')
+        eleLoading.innerHTML = "loading..."
+
+        fetch("/solve" + qs)
+            .then(response => response.json())
+            .then(data => {
+                if (params.nonce != data.nonce) {
+                    console.log("stale nonce")
+                    return
+                }
+                document.querySelector("#words").innerHTML = ''
+                data.words.forEach(word => {
+                    let li = document.createElement("li")
+                    li.innerText = word
+                    document.querySelector("#words").appendChild(li)
+                })
+                document.querySelector("#word_count").innerHTML = new Intl.NumberFormat('en-GB').format(data.words.length)
+                eleLoading.innerHTML = ""
+            })
+    }
+
+    setInterval(getWords, 100)
 </script>
