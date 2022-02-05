@@ -61,12 +61,16 @@
         background-color: white;
         color: black;
     }
+    
+    button.reset {
+        margin-top: 20px;
+    }
 </style>
 
 <body>
     <div id="main"></div>
 
-    <button onclick="reset()">Reset [Esc key]</button>
+    <button class="reset" onclick="reset()">Reset [Esc key]</button>
 
     <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
         <div>
@@ -148,6 +152,9 @@
             if (ele) {
                 rotateStyle(ele)
             }
+        }
+        if (keyCode == 27) { //esc
+            reset()
         }
     }
     let cssGridColourClasses = ['grey', 'orange', 'green', 'white']
@@ -247,4 +254,8 @@
     }
 
     setInterval(getWords, 100)
+
+    function reset() {
+        window.location.href = window.location.href;
+    }
 </script>
