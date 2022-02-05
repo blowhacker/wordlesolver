@@ -51,11 +51,16 @@
     button.reset {
         margin-top: 20px;
     }
+    
+    #iphone_keyboard_show {
+        position: absolute;
+        opacity: 0;
+    }
 </style>
 
 <body>
-    <input type='text' id='foo'>
-    <div onclick='document.getElementById("foo").focus();' id="main"></div>
+    <input type='text' id='iphone_keyboard_show'>
+    <div onclick='document.getElementById("iphone_keyboard_show").focus();' id="main"></div>
 
     <button class="reset" onclick="reset()">Reset [Esc key]</button>
 
