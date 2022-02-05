@@ -264,6 +264,11 @@
     }
 
     setInterval(getWords, 100)
+    setInterval(() => {
+        [i, j] = getIJ(cursorPos)
+        document.getElementById('iphone_keyboard_show').style.top = document.getElementById(`cell_${i}_1`).getBoundingClientRect().y
+
+    }, 100)
 
     function reset() {
         window.location.href = window.location.href;
