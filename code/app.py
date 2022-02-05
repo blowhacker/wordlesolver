@@ -9,12 +9,12 @@ app.config["JSON_SORT_KEYS"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 
-@app.route("/")
+@app.route("/olde")
 def hello():
     return render_template("index.html")
 
 
-@app.route("/grid")
+@app.route("/")
 def grid():
     return render_template("grid.html")
 
