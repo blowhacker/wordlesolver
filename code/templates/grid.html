@@ -6,8 +6,6 @@
         font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
     }
     
-    @media only screen and (min-device-width: 375px) and (max-device-width: 667px) and (-webkit-min-device-pixel-ratio: 2) and (orientation: portrait) {}
-    
     table td {
         border: 2px solid #ddd;
         padding: 0px;
@@ -57,7 +55,7 @@
 
 <body>
     <input type='text' id='foo'>
-    <div onclick='$("#foo").focus();' id="main"></div>
+    <div onclick='document.getElementById("foo").focus();' id="main"></div>
 
     <button class="reset" onclick="reset()">Reset [Esc key]</button>
 
