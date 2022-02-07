@@ -31,7 +31,9 @@ def solve():
     known_positions = args.get("include_pos", default="{}").lower()
     known_positions = json.loads(known_positions)
 
-    filtered = solver.filter_dont_match(solver.wordlist, dont_match)
+    wordlist_wordle_only = args.get("wordlist", default="wordle") != "wordle"
+
+    filtered = solver.filter_dont_match(solver.wordlist(wordlist_wordle_only), dont_match)
     filtered = solver.filter_known_letters(filtered, must_match)
 
     filtered = solver.filter_known_positions(filtered, known_positions)
