@@ -78,6 +78,10 @@
         padding-left: 25px;
         color: #777;
     }
+    
+    ul#words {
+        font-size: 20px
+    }
 </style>
 
 <body>
@@ -124,37 +128,41 @@
         return [i, j]
     }
 
+    function enterChar(char) {
+        [i, j] = getIJ(cursorPos)
+        let ele = document.getElementById(`cell_${i}_${j}`)
+        ele.innerHTML = char;
+        ele.classList.add('grey')
+            //match row above if green
+        let eleAbove = document.getElementById(`cell_${i - 1}_${j}`)
+        if (eleAbove) {
+            if (ele.innerText == eleAbove.innerText && eleAbove.classList.contains('green')) {
+                ele.classList.add('green')
+                ele.classList.remove('grey')
+            } else {
+                let oranges = []
+                document.querySelectorAll('.orange').forEach(e => oranges.push(e.innerText))
+                if (oranges.indexOf(ele.innerText) !== -1) {
+                    cssGridColourClasses.forEach(c => ele.classList.remove(c))
+                    ele.classList.add('orange')
+                }
+            }
+        }
+
+
+        cursorPos++
+        if (cursorPos > rows * cols) {
+            cursorPos = rows * cols
+        }
+    }
+
     let cursorPos = 0
     document.onkeydown = function(e) {
         e = e || window.event;
         let keyCode = e.which || e.keyCode
 
         if (keyCode <= "Z".charCodeAt(0) && keyCode >= "A".charCodeAt(0)) {
-            [i, j] = getIJ(cursorPos)
-            let ele = document.getElementById(`cell_${i}_${j}`)
-            ele.innerHTML = String.fromCharCode(keyCode);
-            ele.classList.add('grey')
-                //match row above if green
-            let eleAbove = document.getElementById(`cell_${i - 1}_${j}`)
-            if (eleAbove) {
-                if (ele.innerText == eleAbove.innerText && eleAbove.classList.contains('green')) {
-                    ele.classList.add('green')
-                    ele.classList.remove('grey')
-                } else {
-                    let oranges = []
-                    document.querySelectorAll('.orange').forEach(e => oranges.push(e.innerText))
-                    if (oranges.indexOf(ele.innerText) !== -1) {
-                        cssGridColourClasses.forEach(c => ele.classList.remove(c))
-                        ele.classList.add('orange')
-                    }
-                }
-            }
-
-
-            cursorPos++
-            if (cursorPos > rows * cols) {
-                cursorPos = rows * cols
-            }
+            enterChar(String.fromCharCode(keyCode))
         }
         if (keyCode == 8) { //backspace
             cursorPos--
@@ -168,7 +176,7 @@
             })
         }
 
-        if (keyCode == 32) { //space
+        if (keyCode == 32) { //space // pretty useless as space causes scrolling
             [i, j] = getIJ(cursorPos - 1)
             let ele = document.getElementById(`cell_${i}_${j}`)
             if (ele) {
@@ -280,6 +288,11 @@
                 data.words.forEach(word => {
                     let li = document.createElement("li")
                     li.innerText = word
+                    li.addEventListener('click', function() {
+                        [i, j] = getIJ(cursorPos)
+                        cursorPos = i * cols;
+                        [...this.innerText].forEach(enterChar)
+                    })
                     document.querySelector("#words").appendChild(li)
                 })
                 document.querySelector("#word_count").innerHTML = new Intl.NumberFormat('en-GB').format(data.words.length)
