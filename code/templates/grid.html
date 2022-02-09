@@ -86,7 +86,7 @@
 
 <body>
     <input type='text' id='iphone_keyboard_show' type="text" autocomplete="off" autocorrect="off" autocapitalize="off">
-    <div onclick='document.getElementById("iphone_keyboard_show").focus();' id="main"></div>
+    <div id="main"></div>
     <div id="non_grid">
         <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
             <div id="sort_controls">
@@ -291,7 +291,8 @@
                     li.addEventListener('click', function() {
                         [i, j] = getIJ(cursorPos)
                         cursorPos = i * cols;
-                        [...this.innerText].forEach(enterChar)
+                        [...this.innerText].forEach(enterChar);
+                        showKeyboard()
                     })
                     document.querySelector("#words").appendChild(li)
                 })
@@ -299,6 +300,12 @@
                 eleLoading.innerHTML = ""
             })
     }
+
+    function showKeyboard() {
+        document.getElementById("iphone_keyboard_show").focus()
+    }
+
+    document.getElementById("main").addEventListener('click', showKeyboard)
 
     setInterval(getWords, 100)
     setInterval(() => {
