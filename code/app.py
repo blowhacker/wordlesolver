@@ -36,12 +36,14 @@ def solve():
 
     wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
 
+    algorithm = sort_by_pos and "position_and_frequency" or "frequency"
+
     query = {
         "known_positions_not": known_positions_not,
         "known_positions": known_positions,
         "must_match": must_match,
         "dont_match": dont_match,
-        "sort_by_pos": sort_by_pos,
+        "algorithm": algorithm,
     }
 
     resp = {

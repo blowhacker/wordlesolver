@@ -1,7 +1,7 @@
 import solver
 
 
-def solve(wordlist, word, sort_by_pos=True):
+def solve(wordlist, word, algorithm="frequency"):
     dont_match = ""
     must_match = ""
     known_positions = {}
@@ -15,13 +15,14 @@ def solve(wordlist, word, sort_by_pos=True):
             must_match=must_match,
             known_positions=known_positions,
             known_positions_not=known_positions_not,
-            sort_by_pos=sort_by_pos,
+            algorithm=algorithm,
         )
 
         if len(guessed_dict) == 0:
             print("No words found")
             return -1
         guessed = next(iter(guessed_dict))
+        print(f"\t{guessed}")
         if guessed == word:
             return i
         for ii, char in enumerate(guessed):
@@ -39,7 +40,7 @@ def solve(wordlist, word, sort_by_pos=True):
     return -1
 
 
-def run_test(sort_by_pos=True, wordlist_all=False):
+def run_test(algorithm="frequency", wordlist_all=False):
     wordlist = solver.wordlist(wordlist_all=wordlist_all)
     wordle_valid = solver.wordlist(wordlist_all=False)
 
@@ -48,7 +49,7 @@ def run_test(sort_by_pos=True, wordlist_all=False):
     loses = 0
 
     for i, word in enumerate(wordle_valid):
-        tries = solve(wordlist, word, sort_by_pos=sort_by_pos)
+        tries = solve(wordlist, word, algorithm="frequency")
         print(f"{i}: {word}. Tries: {tries}")
         if tries > 0:
             tries_total += tries
@@ -63,7 +64,7 @@ def run_test(sort_by_pos=True, wordlist_all=False):
 
 
 if __name__ == "__main__":
-    # run_test(True, wordlist_all=False)
+    # run_test(False, wordlist_all=False)
 
-    wordlist = solver.wordlist(True)
-    print(solve(wordlist, "gaunt", True))
+    wordlist = solver.wordlist(False)
+    print(solve(wordlist, "ember", "position_and_frequency"))

@@ -88,8 +88,8 @@ def filter_known_positions_not(words, known_positions_not):
     return set(filtered2)
 
 
-def sort_wordlist(words, by_position=False):
-    if by_position:
+def sort_wordlist(words, algorithm="frequency"):
+    if algorithm == "position_and_frequency":
         freq = char_frequency_by_position(words)
         ranked = {}
         for word in words:
@@ -115,12 +115,13 @@ def guess(
     must_match="",
     known_positions={},
     known_positions_not={},
-    sort_by_pos=True,
+    algorithm="frequency",
 ):
 
     filtered = filter_dont_match(wordlist, dont_match)
     filtered = filter_known_letters(filtered, must_match)
     filtered = filter_known_positions(filtered, known_positions)
     filtered = filter_known_positions_not(filtered, known_positions_not)
-    filtered = sort_wordlist(filtered, sort_by_pos)
+    filtered = sort_wordlist(filtered, algorithm=algorithm)
+
     return filtered
