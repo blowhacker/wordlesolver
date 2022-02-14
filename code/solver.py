@@ -1,8 +1,8 @@
 import os
 
 
-def wordlist(wordle_solutions_only=False):
-    file = "wordle-allowed.txt" if wordle_solutions_only else "wordlist.txt"
+def wordlist(wordlist_all=False):
+    file = "wordle-allowed.txt" if wordlist_all else "wordle-solutions.txt"
     with open(os.path.dirname(os.path.abspath(__file__)) + "/" + file, "r") as file:
         data = file.read()
 
@@ -64,6 +64,8 @@ def filter_known_positions(words, known_positions):
         matches = True
         for key, value in known_positions.items():
             matches = matches and word[int(key)] == value
+            if not matches:
+                break
 
         if matches:
             filtered2.append(word)
@@ -109,8 +111,8 @@ def sort_wordlist(words, by_position=False):
 
 def guess(
     wordlist,
-    dont_match={},
-    must_match=[],
+    dont_match="",
+    must_match="",
     known_positions={},
     known_positions_not={},
     sort_by_pos=True,

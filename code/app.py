@@ -44,7 +44,7 @@ def solve():
         "sort_by_pos": sort_by_pos,
     }
 
-    resp =  {
+    resp = {
         "words": solver.guess(solver.wordlist(wordlist_wordle_only), **query),
         "nonce": nonce,
     }
