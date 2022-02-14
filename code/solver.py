@@ -1,7 +1,9 @@
 import os
 from random import randint
+from memoization import cached
 
 
+@cached
 def wordlist(wordlist_all=False):
     file = "wordle-allowed.txt" if wordlist_all else "wordle-solutions.txt"
     with open(os.path.dirname(os.path.abspath(__file__)) + "/" + file, "r") as file:
@@ -10,6 +12,7 @@ def wordlist(wordlist_all=False):
     return data.split("\n")
 
 
+@cached
 def char_frequency(words):
     freq = {}
     for word in words:
@@ -22,6 +25,7 @@ def char_frequency(words):
     return dict(sorted(freq.items(), key=lambda item: -item[1]))
 
 
+@cached
 def char_frequency_by_position(words):
     freq = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}}
     for word in words:
@@ -35,6 +39,7 @@ def char_frequency_by_position(words):
     return freq
 
 
+@cached
 def filter_dont_match(words, dont_match):
     filtered = []
     for word in words:
@@ -48,6 +53,7 @@ def filter_dont_match(words, dont_match):
     return filtered
 
 
+@cached
 def filter_known_letters(words, must_match):
     filtered2 = []
     for word in words:
@@ -59,6 +65,7 @@ def filter_known_letters(words, must_match):
     return set(filtered2)
 
 
+@cached
 def filter_known_positions(words, known_positions):
     filtered2 = []
     for word in words:
@@ -74,6 +81,7 @@ def filter_known_positions(words, known_positions):
     return set(filtered2)
 
 
+@cached
 def filter_known_positions_not(words, known_positions_not):
     filtered2 = []
     for word in words:
@@ -89,23 +97,36 @@ def filter_known_positions_not(words, known_positions_not):
     return set(filtered2)
 
 
+@cached
+def sort_wordlist_frequency(words):
+    freq = char_frequency(words)
+    ranked = {}
+    for word in words:
+        ranked[word] = 0
+        num_letters = len(set(word))
+        for char in word:
+            ranked[word] += freq[char] * num_letters
+    return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+
+
+@cached
+def sort_wordlist_position_frequency(words):
+    freq = char_frequency_by_position(words)
+    ranked = {}
+    for word in words:
+        ranked[word] = 0
+        num_letters = len(set(word))
+        for i, char in enumerate(word):
+            ranked[word] += freq[i][char] * num_letters
+    return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+
+
+@cached
 def sort_wordlist(words, algorithm="frequency"):
     if algorithm == "position_and_frequency":
-        freq = char_frequency_by_position(words)
-        ranked = {}
-        for word in words:
-            ranked[word] = 0
-            num_letters = len(set(word))
-            for i, char in enumerate(word):
-                ranked[word] += freq[i][char] * num_letters
+        return sort_wordlist_position_frequency(words)
     elif algorithm == "frequency":
-        freq = char_frequency(words)
-        ranked = {}
-        for word in words:
-            ranked[word] = 0
-            num_letters = len(set(word))
-            for char in word:
-                ranked[word] += freq[char] * num_letters
+        return sort_wordlist_frequency(words)
     elif algorithm == "random":
         ranked = {}
         for word in words:

@@ -64,8 +64,8 @@ def run_test(algorithm="frequency", wordlist_all=False):
 
 
 if __name__ == "__main__":
-    run_test("random", wordlist_all=True)
+    run_test("position_and_frequency", wordlist_all=False)
 
     # wordlist = solver.wordlist(False)
-    # print(solve(wordlist, "ember", "position_and_frequency"))
+    # print(solve(wordlist, "yield", "position_and_frequency"))
     # print(solve(wordlist, "ember", "random"))

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "452d1d5ef751485f10a55d4ea3cfea19b1636b97f100083bc0589c0c095e1a92"
+            "sha256": "40019bc0dc97043538853d7c8524e3f47cc1c7546e2fd816ce7a28b75d431ddd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -63,11 +63,11 @@
         },
         "flask": {
             "hashes": [
-                "sha256:7b2fb8e934ddd50731893bdcdb00fc8c0315916f9fcd50d22c7cc1a95ab634e2",
-                "sha256:cb90f62f1d8e4dc4621f52106613488b5ba826b2e1e10a33eac92f723093ab6a"
+                "sha256:59da8a3170004800a2837844bfa84d49b022550616070f7cb1a659682b2e7c9f",
+                "sha256:e1120c228ca2f553b470df4a5fa927ab66258467526069981b3eb0a91902687d"
             ],
             "index": "pypi",
-            "version": "==2.0.2"
+            "version": "==2.0.3"
         },
         "iniconfig": {
             "hashes": [
@@ -166,6 +166,13 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2.0.1"
+        },
+        "memoization": {
+            "hashes": [
+                "sha256:fde5e7cd060ef45b135e0310cfec17b2029dc472ccb5bbbbb42a503d4538a135"
+            ],
+            "index": "pypi",
+            "version": "==0.4.0"
         },
         "mypy-extensions": {
             "hashes": [
