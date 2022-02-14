@@ -1,8 +1,8 @@
 import os
 
 
-def wordlist(wordle_only=False):
-    file = "wordle-allowed.txt" if wordle_only else "wordlist.txt"
+def wordlist(wordle_solutions_only=False):
+    file = "wordle-allowed.txt" if wordle_solutions_only else "wordlist.txt"
     with open(os.path.dirname(os.path.abspath(__file__)) + "/" + file, "r") as file:
         data = file.read()
 
@@ -86,7 +86,7 @@ def filter_known_positions_not(words, known_positions_not):
     return set(filtered2)
 
 
-def sort_by_frequency(words, by_position=False):
+def sort_wordlist(words, by_position=False):
     if by_position:
         freq = char_frequency_by_position(words)
         ranked = {}
@@ -105,3 +105,20 @@ def sort_by_frequency(words, by_position=False):
                 ranked[word] += freq[char] * num_letters
 
     return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+
+
+def guess(
+    wordlist,
+    dont_match={},
+    must_match=[],
+    known_positions={},
+    known_positions_not={},
+    sort_by_pos=True,
+):
+
+    filtered = filter_dont_match(wordlist, dont_match)
+    filtered = filter_known_letters(filtered, must_match)
+    filtered = filter_known_positions(filtered, known_positions)
+    filtered = filter_known_positions_not(filtered, known_positions_not)
+    filtered = sort_wordlist(filtered, sort_by_pos)
+    return filtered

@@ -32,19 +32,24 @@ def solve():
     known_positions = args.get("include_pos", default="{}").lower()
     known_positions = json.loads(known_positions)
 
-    wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
-
-    filtered = solver.filter_dont_match(
-        solver.wordlist(wordlist_wordle_only), dont_match
-    )
-    filtered = solver.filter_known_letters(filtered, must_match)
-
-    filtered = solver.filter_known_positions(filtered, known_positions)
-
-    filtered = solver.filter_known_positions_not(filtered, known_positions_not)
-
     sort_by_pos = args.get("sort_by_pos", default="byfreq") == "bypos"
 
-    filtered = solver.sort_by_frequency(filtered, sort_by_pos)
+    wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
 
-    return {"words": filtered, "nonce": nonce}
+    query = {
+        "known_positions_not": known_positions_not,
+        "known_positions": known_positions,
+        "must_match": must_match,
+        "dont_match": dont_match,
+        "sort_by_pos": sort_by_pos,
+    }
+
+    resp =  {
+        "words": solver.guess(solver.wordlist(wordlist_wordle_only), **query),
+        "nonce": nonce,
+    }
+
+    if args.get("show_query", default="false") != "false":
+        resp["query"] = query
+
+    return resp
