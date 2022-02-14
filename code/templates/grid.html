@@ -99,8 +99,8 @@
     <div id="non_grid">
         <h3>Words <span id="word_count"></span><span id="loading"></span></h1>
             <div id="sort_controls">
-                <input type="checkbox" id="wordlist" checked value="wordle">
-                <label for="wordlist">Wordle words only</label> <br>
+                <input type="checkbox" id="wordlist" checked value="wordle_all">
+                <label for="wordlist">All Wordle allowed words</label> <br>
                 <input type="radio" name="sort_by" id="sort_by_position" checked value="bypos"><label for="sort_by_position">Sort by position and frequency</label><br>
                 <input type="radio" name="sort_by" id="sort_by_frequency" value="byfreq"><label for="sort_by_frequency">Sort by frequency</label>
             </div>
@@ -270,7 +270,7 @@
             exclude_pos: JSON.stringify(exclude_pos),
             include_pos: JSON.stringify(include_pos),
             sort_by_pos: document.querySelector("input[name=sort_by]:checked").value,
-            wordlist: document.querySelector("#wordlist:checked") ? 'wordle' : 'full',
+            wordlist: document.querySelector("#wordlist:checked") ? 'wordle_all' : 'full',
         }
 
         if (JSON.stringify(params) === lastQs) {
@@ -294,9 +294,10 @@
                     return
                 }
                 document.querySelector("#words").innerHTML = ''
-                data.words.forEach(word => {
+                Object.keys(data.words).forEach(word => {
                     let li = document.createElement("li")
                     li.innerText = word
+                    li.title = `Score: ${data.words[word]}`
                     li.addEventListener('click', function() {
                         [i, j] = getIJ(cursorPos)
                         cursorPos = i * cols;
@@ -305,7 +306,7 @@
                     })
                     document.querySelector("#words").appendChild(li)
                 })
-                document.querySelector("#word_count").innerHTML = new Intl.NumberFormat('en-GB').format(data.words.length)
+                document.querySelector("#word_count").innerHTML = new Intl.NumberFormat('en-GB').format(Object.keys(data.words).length);
                 eleLoading.innerHTML = ""
             })
     }
@@ -318,7 +319,7 @@
 
     setInterval(getWords, 100)
     setInterval(() => {
-        [i, j] = getIJ(cursorPos)
+        [i, j] = getIJ(cursorPos);
         document.getElementById('iphone_keyboard_show').style.top =
             document.getElementById(`cell_${i}_1`).getBoundingClientRect().y + "px"
 

@@ -31,7 +31,7 @@ def solve():
     known_positions = args.get("include_pos", default="{}").lower()
     known_positions = json.loads(known_positions)
 
-    wordlist_wordle_only = args.get("wordlist", default="wordle") != "wordle"
+    wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
 
     filtered = solver.filter_dont_match(solver.wordlist(wordlist_wordle_only), dont_match)
     filtered = solver.filter_known_letters(filtered, must_match)
@@ -44,4 +44,4 @@ def solve():
 
     filtered = solver.sort_by_frequency(filtered, sort_by_pos)
 
-    return {"words": list(filtered), "nonce": nonce}
+    return {"words": filtered, "nonce": nonce}

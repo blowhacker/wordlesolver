@@ -7,7 +7,7 @@ import os
 # wordlist = data.split("\n")
 
 def wordlist(wordle_only=False):
-    file = "wordlist-full.txt" if wordle_only else "wordlist.txt"
+    file = "wordle-allowed.txt" if wordle_only else "wordlist.txt"
     with open(os.path.dirname(os.path.abspath(__file__)) +"/" + file, "r") as file:
         data = file.read()
 
