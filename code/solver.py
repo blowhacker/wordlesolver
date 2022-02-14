@@ -1,4 +1,5 @@
 import os
+from random import randint
 
 
 def wordlist(wordlist_all=False):
@@ -97,7 +98,7 @@ def sort_wordlist(words, algorithm="frequency"):
             num_letters = len(set(word))
             for i, char in enumerate(word):
                 ranked[word] += freq[i][char] * num_letters
-    else:
+    elif algorithm == "frequency":
         freq = char_frequency(words)
         ranked = {}
         for word in words:
@@ -105,6 +106,10 @@ def sort_wordlist(words, algorithm="frequency"):
             num_letters = len(set(word))
             for char in word:
                 ranked[word] += freq[char] * num_letters
+    elif algorithm == "random":
+        ranked = {}
+        for word in words:
+            ranked[word] = randint(0, len(words))
 
     return dict(sorted(ranked.items(), key=lambda item: -item[1]))
 

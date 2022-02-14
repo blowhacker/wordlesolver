@@ -22,7 +22,7 @@ def solve(wordlist, word, algorithm="frequency"):
             print("No words found")
             return -1
         guessed = next(iter(guessed_dict))
-        print(f"\t{guessed}")
+        # print(f"\t{guessed}")
         if guessed == word:
             return i
         for ii, char in enumerate(guessed):
@@ -59,12 +59,13 @@ def run_test(algorithm="frequency", wordlist_all=False):
             loses += 1
 
     print(
-        f"Average tries: {tries_total / wins}, loses: {loses}, sort_by_pos: {sort_by_pos}, wordlist_all: {wordlist_all}"
+        f"Average tries: {tries_total / wins}, loses: {loses}, algorithm: {algorithm}, wordlist_all: {wordlist_all}"
     )
 
 
 if __name__ == "__main__":
-    # run_test(False, wordlist_all=False)
+    run_test("random", wordlist_all=True)
 
-    wordlist = solver.wordlist(False)
-    print(solve(wordlist, "ember", "position_and_frequency"))
+    # wordlist = solver.wordlist(False)
+    # print(solve(wordlist, "ember", "position_and_frequency"))
+    # print(solve(wordlist, "ember", "random"))
