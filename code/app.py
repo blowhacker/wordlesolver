@@ -18,6 +18,7 @@ def hello():
 def grid():
     return render_template("grid.html")
 
+
 @app.route("/solve")
 def solve():
     args = request.args
@@ -33,7 +34,9 @@ def solve():
 
     wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
 
-    filtered = solver.filter_dont_match(solver.wordlist(wordlist_wordle_only), dont_match)
+    filtered = solver.filter_dont_match(
+        solver.wordlist(wordlist_wordle_only), dont_match
+    )
     filtered = solver.filter_known_letters(filtered, must_match)
 
     filtered = solver.filter_known_positions(filtered, known_positions)

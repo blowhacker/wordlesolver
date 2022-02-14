@@ -1,18 +1,12 @@
 import os
 
 
-# with open(os.path.dirname(os.path.abspath(__file__)) + "/wordlist-full.txt", "r") as file:
-#     data = file.read()
-
-# wordlist = data.split("\n")
-
 def wordlist(wordle_only=False):
     file = "wordle-allowed.txt" if wordle_only else "wordlist.txt"
-    with open(os.path.dirname(os.path.abspath(__file__)) +"/" + file, "r") as file:
+    with open(os.path.dirname(os.path.abspath(__file__)) + "/" + file, "r") as file:
         data = file.read()
 
     return data.split("\n")
-
 
 
 def char_frequency(words):
