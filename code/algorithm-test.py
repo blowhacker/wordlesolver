@@ -10,7 +10,6 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
     known_positions_not = []
 
     for i in range(1, 7):
-        must_match = "".join(set(must_match))
         guessed_dict = solver.guess(
             wordlist=wordlist,
             grey=dont_match,
