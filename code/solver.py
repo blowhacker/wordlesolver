@@ -125,11 +125,14 @@ def sort_wordlist_position_frequency(words, favour_unique=True):
 @cached
 def sort_wordlist_entropy(words):
     freq = char_frequency(words)
+    chars_total = sum(freq.values())
     ranked = {}
     for word in words:
         ranked[word] = 0
         for char in set(word):
-            ranked[word] += freq[char] * math.log(freq[char], 2)
+            ranked[word] += -(
+                freq[char] / chars_total * math.log(freq[char] / chars_total, 2)
+            )
     return dict(sorted(ranked.items(), key=lambda item: -item[1]))
 
 
