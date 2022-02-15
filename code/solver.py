@@ -41,12 +41,15 @@ def char_frequency_by_position(words):
 
 
 @cached
-def filter_dont_match(words, dont_match):
+def filter_dont_match(words, dont_match, remove=[]):
     filtered = []
     for word in words:
+        word_copy = word
+        for rem in remove:
+            word_copy = word_copy.replace(rem, "_", 1)
         letter_not_found = True
         for letter in dont_match:
-            letter_not_found = letter_not_found and letter not in word
+            letter_not_found = letter_not_found and letter not in word_copy
 
         if letter_not_found:
             filtered.append(word)
@@ -185,10 +188,14 @@ def guess(
     for knp in orange:
         must_match = must_match + list(knp.values())
 
-    filtered = filter_dont_match(wordlist, grey)
+    filtered  = wordlist    
     filtered = filter_known_letters(filtered, must_match)
     filtered = filter_known_positions(filtered, green)
     filtered = filter_known_positions_not(filtered, orange)
+
+    remove = list(green.values())
+    filtered = filter_dont_match(filtered, grey, remove)
+    
     filtered = sort_wordlist(filtered, algorithm=algorithm)
 
     return filtered

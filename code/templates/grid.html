@@ -263,18 +263,7 @@
         let greyTiles = ""
         document.querySelectorAll('.grey').forEach(ele => {
             let char = ele.innerText.toLowerCase()
-            let goodToAdd = false
-            if (Object.values(greenTiles).indexOf(char) == -1) {
-                goodToAdd = true
-            }
-            orangeTitles.forEach(item => {
-                if (Object.values(item)[0] == char) {
-                    goodToAdd = false
-                }
-            })
-            if (goodToAdd) {
-                greyTiles += char
-            }
+            greyTiles += char
         })
 
         let params = {
