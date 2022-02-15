@@ -178,6 +178,13 @@
         if (e.altKey || e.ctrlKey || e.metaKey) {
             return
         }
+        if (keyCode <= "6".charCodeAt(0) && keyCode >= "1".charCodeAt(0)) {
+            if (cursorPos > 0) {
+                [i, j] = getIJ(cursorPos - 1)
+                j = keyCode - "1".charCodeAt(0)
+                rotateStyle(document.getElementById(`cell_${i}_${j}`))
+            }
+        }
 
         if (keyCode <= "Z".charCodeAt(0) && keyCode >= "A".charCodeAt(0)) {
             enterChar(String.fromCharCode(keyCode))
