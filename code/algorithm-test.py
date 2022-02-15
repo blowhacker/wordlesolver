@@ -1,7 +1,9 @@
+from hashlib import algorithms_available
 import solver
+import json
 
 
-def solve(wordlist, word, algorithm="frequency"):
+def solve(wordlist, word, algorithm="frequency", annotate=False):
     dont_match = ""
     must_match = ""
     known_positions = {}
@@ -22,7 +24,8 @@ def solve(wordlist, word, algorithm="frequency"):
             print("No words found")
             return -1
         guessed = next(iter(guessed_dict))
-        # print(f"\t{guessed}")
+        if annotate:
+            print(f"\t{guessed}")
         if guessed == word:
             return i
         for ii, char in enumerate(guessed):
@@ -49,7 +52,7 @@ def run_test(algorithm="frequency", wordlist_all=False):
     loses = 0
 
     for i, word in enumerate(wordle_valid):
-        tries = solve(wordlist, word, algorithm="frequency")
+        tries = solve(wordlist, word, algorithm)
         print(f"{i}: {word}. Tries: {tries}")
         if tries > 0:
             tries_total += tries
@@ -61,11 +64,34 @@ def run_test(algorithm="frequency", wordlist_all=False):
     print(
         f"Average tries: {tries_total / wins}, loses: {loses}, algorithm: {algorithm}, wordlist_all: {wordlist_all}"
     )
+    return {"wins": wins, "loses": loses, "tries": tries_total, "average_tries": tries_total / wins,
+            "algorithm": algorithm, "wordlist_all": wordlist_all}
+    
+    
 
 
 if __name__ == "__main__":
-    run_test("position_and_frequency", wordlist_all=False)
+    algorithms_available = [
+        "frequency",
+        "position_and_frequency",
+        "position_and_frequency_unique",
+        "combo",
+        "random",
+    ]
+
+    all_results = []
+    for algorithm in algorithms_available:
+        for wordlist_all in [True, False]:        
+            results = run_test(algorithm, wordlist_all)
+            all_results.append(results)
+            print(results)
+
+    
+    with open('json_data.json', 'w') as outfile:
+        json.dump(all_results, outfile, indent=4)
+
+    # run_test(algorithms_available[1], wordlist_all=False)
 
     # wordlist = solver.wordlist(False)
-    # print(solve(wordlist, "yield", "position_and_frequency"))
+    # print(solve(wordlist, "tight", "position_and_frequency", True))
     # print(solve(wordlist, "ember", "random"))

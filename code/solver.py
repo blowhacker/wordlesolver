@@ -1,6 +1,7 @@
 import os
 from random import randint
 from memoization import cached
+import math
 
 
 @cached
@@ -110,12 +111,12 @@ def sort_wordlist_frequency(words):
 
 
 @cached
-def sort_wordlist_position_frequency(words):
+def sort_wordlist_position_frequency(words, favour_unique=True):
     freq = char_frequency_by_position(words)
     ranked = {}
     for word in words:
         ranked[word] = 0
-        num_letters = len(set(word))
+        num_letters = favour_unique and 1 or len(word)
         for i, char in enumerate(word):
             ranked[word] += freq[i][char] * num_letters
     return dict(sorted(ranked.items(), key=lambda item: -item[1]))
@@ -124,17 +125,29 @@ def sort_wordlist_position_frequency(words):
 @cached
 def sort_wordlist(words, algorithm="frequency"):
     if algorithm == "position_and_frequency":
+        return sort_wordlist_position_frequency(words, favour_unique=False)
+    elif algorithm == "position_and_frequency_unique":
         return sort_wordlist_position_frequency(words)
+    elif algorithm == "combo":
+        bypos = sort_wordlist_position_frequency(words)
+        byfreq = sort_wordlist_frequency(words)
+        merged = {}
+        for word in bypos:
+            merged[word] = bypos[word] * bypos[word] * byfreq[word]
+        return dict(sorted(merged.items(), key=lambda item: -item[1]))
+
     elif algorithm == "frequency":
         return sort_wordlist_frequency(words)
     elif algorithm == "random":
         ranked = {}
         for word in words:
             ranked[word] = randint(0, len(words))
+        return dict(sorted(ranked.items(), key=lambda item: -item[1]))
 
-    return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+    return {}
 
 
+@cached
 def guess(
     wordlist,
     dont_match="",
