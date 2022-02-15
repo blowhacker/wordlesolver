@@ -176,11 +176,14 @@ def sort_wordlist(words, algorithm="frequency"):
 def guess(
     wordlist,
     dont_match="",
-    must_match="",
     known_positions={},
     known_positions_not={},
     algorithm="frequency",
 ):
+
+    must_match = list(known_positions.values())
+    for knp in known_positions_not:
+        must_match = must_match + list(knp.values())
 
     filtered = filter_dont_match(wordlist, dont_match)
     filtered = filter_known_letters(filtered, must_match)

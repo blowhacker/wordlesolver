@@ -245,46 +245,42 @@
 
     function getWords() {
 
-        let strInclude = ''
-        let exclude_pos = []
+        let orangeTitles = []
 
         document.querySelectorAll('.orange').forEach(ele => {
             let pos = parseInt(ele.id.split('_')[2])
             let d = {}
             d[pos] = ele.innerText.toLowerCase()
-            exclude_pos.push(d)
-            strInclude += ele.innerText.toLowerCase()
+            orangeTitles.push(d)
         })
 
-        let include_pos = {}
+        let greenTiles = {}
         document.querySelectorAll('.green').forEach(ele => {
             let pos = parseInt(ele.id.split('_')[2])
-            include_pos[pos] = ele.innerText.toLowerCase()
+            greenTiles[pos] = ele.innerText.toLowerCase()
         })
 
-        let exclude = ""
+        let greyTiles = ""
         document.querySelectorAll('.grey').forEach(ele => {
             let char = ele.innerText.toLowerCase()
             let goodToAdd = false
-            if (Object.values(include_pos).indexOf(char) == -1) {
+            if (Object.values(greenTiles).indexOf(char) == -1) {
                 goodToAdd = true
             }
-            exclude_pos.forEach(item => {
+            orangeTitles.forEach(item => {
                 if (Object.values(item)[0] == char) {
                     goodToAdd = false
                 }
             })
             if (goodToAdd) {
-                exclude += char
+                greyTiles += char
             }
         })
 
-
         let params = {
-            include: [...new Set(strInclude)].join('').toLowerCase(),
-            exclude: exclude,
-            exclude_pos: JSON.stringify(exclude_pos),
-            include_pos: JSON.stringify(include_pos),
+            green: JSON.stringify(greenTiles),
+            orange: JSON.stringify(orangeTitles),
+            grey: JSON.stringify([...greyTiles]),
             algorithm: document.querySelector("#algorithm").value,
             wordlist: document.querySelector("#wordlist:checked") ? 'wordle_all' : 'full',
         }
@@ -295,7 +291,6 @@
         lastQs = JSON.stringify(params)
 
         params['nonce'] = `${new Date() / 1}${Math.random()}`
-
 
         let qs = "?" + Object.keys(params).map(k => k + "=" + encodeURIComponent(params[k])).join("&")
 

@@ -6,7 +6,6 @@ import datetime
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
     dont_match = ""
-    must_match = ""
     known_positions = {}
     known_positions_not = []
 
@@ -15,7 +14,6 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
         guessed_dict = solver.guess(
             wordlist=wordlist,
             dont_match=dont_match,
-            must_match=must_match,
             known_positions=known_positions,
             known_positions_not=known_positions_not,
             algorithm=algorithm,
@@ -32,12 +30,10 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
         for ii, char in enumerate(guessed):
             if char == word[ii]:
                 known_positions[str(ii)] = char
-                must_match += char
             elif char in word:
                 knp = {}
                 knp[str(ii)] = char
                 known_positions_not.append(knp)
-                must_match += char
             if char not in word:
                 dont_match += char
 

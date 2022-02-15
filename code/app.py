@@ -1,3 +1,4 @@
+from cgitb import grey
 from datetime import datetime
 from email.policy import default
 import json
@@ -23,27 +24,20 @@ def grid():
 def solve():
     args = request.args
     nonce = args.get("nonce", default=datetime.now().timestamp())
-    must_match = args.get("include", default="").lower()
-    dont_match = args.get("exclude", default="").lower()
 
-    known_positions_not = args.get("exclude_pos", default="{}").lower()
-    known_positions_not = json.loads(known_positions_not)
-
-    known_positions = args.get("include_pos", default="{}").lower()
-    known_positions = json.loads(known_positions)
-
-    wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
-
-    algorithm = args.get("algorithm", default="frequency")
+    grey = args.get("grey", default="{}").lower()
+    orange = args.get("orange", default="{}").lower()
+    green = args.get("green", default="{}").lower()
 
     query = {
-        "known_positions_not": known_positions_not,
-        "known_positions": known_positions,
-        "must_match": must_match,
-        "dont_match": dont_match,
-        "algorithm": algorithm,
+        "known_positions_not": json.loads(orange),
+        "known_positions": json.loads(green),
+        # "must_match": must_match,
+        "dont_match": json.loads(grey),
+        "algorithm": args.get("algorithm", default="frequency"),
     }
 
+    wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
     resp = {
         "words": solver.guess(solver.wordlist(wordlist_wordle_only), **query),
         "nonce": nonce,
