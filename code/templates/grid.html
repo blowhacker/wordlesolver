@@ -170,6 +170,10 @@
         e = e || window.event;
         let keyCode = e.which || e.keyCode
 
+        if (e.altKey || e.ctrlKey || e.metaKey) {
+            return
+        }
+
         if (keyCode <= "Z".charCodeAt(0) && keyCode >= "A".charCodeAt(0)) {
             enterChar(String.fromCharCode(keyCode))
         }
