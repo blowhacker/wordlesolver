@@ -1,6 +1,7 @@
 from hashlib import algorithms_available
 import solver
 import json
+import datetime
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
@@ -64,10 +65,14 @@ def run_test(algorithm="frequency", wordlist_all=False):
     print(
         f"Average tries: {tries_total / wins}, loses: {loses}, algorithm: {algorithm}, wordlist_all: {wordlist_all}"
     )
-    return {"wins": wins, "loses": loses, "tries": tries_total, "average_tries": tries_total / wins,
-            "algorithm": algorithm, "wordlist_all": wordlist_all}
-    
-    
+    return {
+        "wins": wins,
+        "loses": loses,
+        "tries": tries_total,
+        "average_tries": tries_total / wins,
+        "algorithm": algorithm,
+        "wordlist_all": wordlist_all,
+    }
 
 
 if __name__ == "__main__":
@@ -77,17 +82,19 @@ if __name__ == "__main__":
         "position_and_frequency_unique",
         "combo",
         "random",
+        "combo_num_words",
+        "entropy",
     ]
 
     all_results = []
     for algorithm in algorithms_available:
-        for wordlist_all in [True, False]:        
+        for wordlist_all in [True, False]:
             results = run_test(algorithm, wordlist_all)
             all_results.append(results)
             print(results)
 
-    
-    with open('json_data.json', 'w') as outfile:
+    suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+    with open(f"../results-{suffix}.json", "w") as outfile:
         json.dump(all_results, outfile, indent=4)
 
     # run_test(algorithms_available[1], wordlist_all=False)

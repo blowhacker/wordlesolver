@@ -32,11 +32,9 @@ def solve():
     known_positions = args.get("include_pos", default="{}").lower()
     known_positions = json.loads(known_positions)
 
-    sort_by_pos = args.get("sort_by_pos", default="byfreq") == "bypos"
-
     wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
 
-    algorithm = sort_by_pos and "position_and_frequency" or "frequency"
+    algorithm = args.get("algorithm", default="frequency")
 
     query = {
         "known_positions_not": known_positions_not,

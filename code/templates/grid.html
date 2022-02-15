@@ -101,8 +101,13 @@
             <div id="sort_controls">
                 <input type="checkbox" id="wordlist" value="wordle_all">
                 <label for="wordlist">All Wordle allowed words</label> <br>
-                <input type="radio" name="sort_by" id="sort_by_position" checked value="bypos"><label for="sort_by_position">Sort by position and frequency</label><br>
-                <input type="radio" name="sort_by" id="sort_by_frequency" value="byfreq"><label for="sort_by_frequency">Sort by frequency</label>
+                <br> Algorithm:
+                <select name="algorithm" id="algorithm">
+                    <option value="position_and_frequency">Frequency & Position</option>
+                    <option value="frequency">Frequency</option>
+                    <option value="entropy">Entropy</option>
+                    <option value="combo_num_words">Proprietary</option>
+                  </select>
             </div>
 
             <ul id="words">
@@ -273,7 +278,7 @@
             exclude: exclude,
             exclude_pos: JSON.stringify(exclude_pos),
             include_pos: JSON.stringify(include_pos),
-            sort_by_pos: document.querySelector("input[name=sort_by]:checked").value,
+            algorithm: document.querySelector("#algorithm").value,
             wordlist: document.querySelector("#wordlist:checked") ? 'wordle_all' : 'full',
         }
 

@@ -1,7 +1,7 @@
+import math
 import os
 from random import randint
 from memoization import cached
-import math
 
 
 @cached
@@ -123,9 +123,22 @@ def sort_wordlist_position_frequency(words, favour_unique=True):
 
 
 @cached
+def sort_wordlist_entropy(words):
+    freq = char_frequency(words)
+    ranked = {}
+    for word in words:
+        ranked[word] = 0
+        for char in set(word):
+            ranked[word] += freq[char] * math.log(freq[char], 2)
+    return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+
+
+@cached
 def sort_wordlist(words, algorithm="frequency"):
     if algorithm == "position_and_frequency":
         return sort_wordlist_position_frequency(words, favour_unique=False)
+    elif algorithm == "entropy":
+        return sort_wordlist_entropy(words)
     elif algorithm == "position_and_frequency_unique":
         return sort_wordlist_position_frequency(words)
     elif algorithm == "combo":
@@ -134,6 +147,15 @@ def sort_wordlist(words, algorithm="frequency"):
         merged = {}
         for word in bypos:
             merged[word] = bypos[word] * bypos[word] * byfreq[word]
+        return dict(sorted(merged.items(), key=lambda item: -item[1]))
+    elif algorithm == "combo_num_words":
+        bypos = sort_wordlist_position_frequency(words)
+        byfreq = sort_wordlist_frequency(words)
+        merged = {}
+        for word in bypos:
+            merged[word] = bypos[word] + byfreq[word] / (
+                1 + math.log(1 + len(words))
+            )  # looks good :)
         return dict(sorted(merged.items(), key=lambda item: -item[1]))
 
     elif algorithm == "frequency":
