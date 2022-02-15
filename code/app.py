@@ -30,10 +30,9 @@ def solve():
     green = args.get("green", default="{}").lower()
 
     query = {
-        "known_positions_not": json.loads(orange),
-        "known_positions": json.loads(green),
-        # "must_match": must_match,
-        "dont_match": json.loads(grey),
+        "grey": json.loads(grey),
+        "orange": json.loads(orange),
+        "green": json.loads(green),
         "algorithm": args.get("algorithm", default="frequency"),
     }
 

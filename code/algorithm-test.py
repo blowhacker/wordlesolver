@@ -13,9 +13,9 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
         must_match = "".join(set(must_match))
         guessed_dict = solver.guess(
             wordlist=wordlist,
-            dont_match=dont_match,
-            known_positions=known_positions,
-            known_positions_not=known_positions_not,
+            grey=dont_match,
+            green=known_positions,
+            orange=known_positions_not,
             algorithm=algorithm,
         )
 
