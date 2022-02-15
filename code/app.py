@@ -23,7 +23,6 @@ def grid():
 @app.route("/solve")
 def solve():
     args = request.args
-    nonce = args.get("nonce", default=datetime.now().timestamp())
 
     grey = args.get("grey", default="{}").lower()
     orange = args.get("orange", default="{}").lower()
@@ -39,7 +38,7 @@ def solve():
     wordlist_wordle_only = args.get("wordlist", default="wordle_all") == "wordle_all"
     resp = {
         "words": solver.guess(solver.wordlist(wordlist_wordle_only), **query),
-        "nonce": nonce,
+        "nonce": args.get("nonce", default=datetime.now().timestamp()),
     }
 
     if args.get("show_query", default="false") != "false":
