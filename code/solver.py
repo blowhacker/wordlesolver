@@ -70,11 +70,11 @@ def filter_known_letters(words, must_match):
 
 
 @cached
-def filter_known_positions(words, known_positions):
+def filter_green(words, green):
     filtered2 = []
     for word in words:
         matches = True
-        for key, value in known_positions.items():
+        for key, value in green.items():
             matches = matches and word[int(key)] == value
             if not matches:
                 break
@@ -86,11 +86,11 @@ def filter_known_positions(words, known_positions):
 
 
 @cached
-def filter_known_positions_not(words, known_positions_not):
+def filter_orange(words, orange):
     filtered2 = []
     for word in words:
         word_good = True
-        for key, value in known_positions_not.items():
+        for key, value in orange.items():
             word_good = word_good and word[int(key)] != value
 
         if word_good:
@@ -191,6 +191,19 @@ def match_all_chars(filtered, chars_needed):
     return filtered2
 
 
+def remove_green_orange_from_grey(grey, green, orange):
+    dont_match = list(grey)
+    for x in green.values():
+        for c in x.values():
+            if c in dont_match:
+                dont_match = dont_match.remove(c)
+    for x in orange.values():
+        for c in x.values():
+            if c in dont_match:
+                dont_match = dont_match.remove(c)
+    return dont_match
+
+
 @cached
 def guess(
     wordlist,
@@ -201,16 +214,17 @@ def guess(
 ):
 
     filtered = wordlist
-    filtered = filter_dont_match(filtered, grey)
+    dont_match = remove_green_orange_from_grey(grey, green, orange)
+    filtered = filter_dont_match(filtered, dont_match)
 
     for row in range(0, 5):
         row = str(row)
         chars_needed = []
         if row in green:
-            filtered = filter_known_positions(filtered, green[row])
+            filtered = filter_green(filtered, green[row])
             chars_needed = chars_needed + list(green[row].values())
         if row in orange:
-            filtered = filter_known_positions_not(filtered, orange[row])
+            filtered = filter_orange(filtered, orange[row])
             chars_needed = chars_needed + list(orange[row].values())
 
         filtered = match_all_chars(filtered, chars_needed)
