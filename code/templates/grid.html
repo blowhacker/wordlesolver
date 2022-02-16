@@ -245,19 +245,34 @@
 
     function getWords() {
 
-        let orangeTitles = []
-
+        let orangeTiles = {}
         document.querySelectorAll('.orange').forEach(ele => {
-            let pos = parseInt(ele.id.split('_')[2])
-            let d = {}
-            d[pos] = ele.innerText.toLowerCase()
-            orangeTitles.push(d)
+            // let pos = ele.id.replace('cell_', '')
+
+            let posX = parseInt(ele.id.split('_')[2])
+            let posY = parseInt(ele.id.split('_')[1])
+            if (!orangeTiles[posY]) {
+                orangeTiles[posY] = {}
+            }
+            orangeTiles[posY][posX] = ele.innerText.toLowerCase()
+
+            // let d = {}
+            // d[pos] = ele.innerText.toLowerCase()
+            // orangeTitles.push(d)
         })
 
         let greenTiles = {}
         document.querySelectorAll('.green').forEach(ele => {
-            let pos = parseInt(ele.id.split('_')[2])
-            greenTiles[pos] = ele.innerText.toLowerCase()
+            let posX = parseInt(ele.id.split('_')[2])
+            let posY = parseInt(ele.id.split('_')[1])
+            if (!greenTiles[posY]) {
+                greenTiles[posY] = {}
+            }
+            greenTiles[posY][posX] = ele.innerText.toLowerCase()
+
+
+            // let pos = parseInt(ele.id.split('_')[2])
+            // greenTiles[pos] = ele.innerText.toLowerCase()
         })
 
         let greyTiles = ""
@@ -268,7 +283,7 @@
 
         let params = {
             green: JSON.stringify(greenTiles),
-            orange: JSON.stringify(orangeTitles),
+            orange: JSON.stringify(orangeTiles),
             grey: JSON.stringify([...greyTiles]),
             algorithm: document.querySelector("#algorithm").value,
             wordlist: document.querySelector("#wordlist:checked") ? 'wordle_all' : 'full',

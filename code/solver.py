@@ -90,9 +90,7 @@ def filter_known_positions_not(words, known_positions_not):
     filtered2 = []
     for word in words:
         word_good = True
-        for item in known_positions_not:
-            key = next(iter(item))
-            value = item[key]
+        for key, value in known_positions_not.items():
             word_good = word_good and word[int(key)] != value
 
         if word_good:
@@ -176,6 +174,24 @@ def sort_wordlist(words, algorithm="frequency"):
 
 
 @cached
+def match_all_chars(filtered, chars_needed):
+    filtered2 = []
+    for word in filtered:
+        word_copy = word
+        word_good = True
+        for char in chars_needed:
+            if char in word_copy:
+                word_copy = word_copy.replace(char, "_", 1)
+                word_good = word_good and True
+            else:
+                word_good = False
+                break
+        if word_good:
+            filtered2.append(word)
+    return filtered2
+
+
+@cached
 def guess(
     wordlist,
     grey="",
@@ -184,18 +200,21 @@ def guess(
     algorithm="frequency",
 ):
 
-    must_match = list(green.values())
-    for knp in orange:
-        must_match = must_match + list(knp.values())
+    filtered = wordlist
+    filtered = filter_dont_match(filtered, grey)
 
-    filtered  = wordlist    
-    filtered = filter_known_letters(filtered, must_match)
-    filtered = filter_known_positions(filtered, green)
-    filtered = filter_known_positions_not(filtered, orange)
+    for row in range(0, 5):
+        row = str(row)
+        chars_needed = []
+        if row in green:
+            filtered = filter_known_positions(filtered, green[row])
+            chars_needed = chars_needed + list(green[row].values())
+        if row in orange:
+            filtered = filter_known_positions_not(filtered, orange[row])
+            chars_needed = chars_needed + list(orange[row].values())
 
-    remove = list(green.values())
-    filtered = filter_dont_match(filtered, grey, remove)
-    
+        filtered = match_all_chars(filtered, chars_needed)
+
     filtered = sort_wordlist(filtered, algorithm=algorithm)
 
     return filtered
