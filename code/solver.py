@@ -41,12 +41,27 @@ def char_frequency_by_position(words):
 
 
 @cached
-def filter_dont_match(words, dont_match, remove=[]):
+def filter_dont_match(words, dont_match):
     filtered = []
     for word in words:
-        word_copy = word
-        for rem in remove:
-            word_copy = word_copy.replace(rem, "_", 1)
+        letter_not_found = True
+        for letter in dont_match:
+            letter_not_found = letter_not_found and letter not in word
+
+        if letter_not_found:
+            filtered.append(word)
+
+    return filtered
+
+
+@cached
+def filter_dont_match_at_pos(words, dont_match, ignore_pos=[]):
+    filtered = []
+    for word in words:
+        word_copy = ""
+        for pos in range(0, len(word)):
+            if str(pos) not in ignore_pos:
+                word_copy += word[pos]
         letter_not_found = True
         for letter in dont_match:
             letter_not_found = letter_not_found and letter not in word_copy
@@ -174,12 +189,12 @@ def sort_wordlist(words, algorithm="frequency"):
 
 
 @cached
-def match_all_chars(filtered, chars_needed):
+def match_all_chars(filtered, chars_mandatory):
     filtered2 = []
     for word in filtered:
         word_copy = word
         word_good = True
-        for char in chars_needed:
+        for char in chars_mandatory:
             if char in word_copy:
                 word_copy = word_copy.replace(char, "_", 1)
                 word_good = word_good and True
@@ -191,16 +206,16 @@ def match_all_chars(filtered, chars_needed):
     return filtered2
 
 
-def remove_green_orange_from_grey(grey, green, orange):
+def chars_to_exclude(grey, green, orange):
     dont_match = list(grey)
     for x in green.values():
         for c in x.values():
             if c in dont_match:
-                dont_match = dont_match.remove(c)
+                dont_match.remove(c)
     for x in orange.values():
         for c in x.values():
             if c in dont_match:
-                dont_match = dont_match.remove(c)
+                dont_match.remove(c)
     return dont_match
 
 
@@ -214,20 +229,28 @@ def guess(
 ):
 
     filtered = wordlist
-    dont_match = remove_green_orange_from_grey(grey, green, orange)
-    filtered = filter_dont_match(filtered, dont_match)
+    if grey:
+        dont_match = chars_to_exclude(grey, green, orange)
+        filtered = filter_dont_match(filtered, dont_match)
+
+    known_positions = []
 
     for row in range(0, 5):
         row = str(row)
-        chars_needed = []
+        chars_mandatory = []
         if row in green:
             filtered = filter_green(filtered, green[row])
-            chars_needed = chars_needed + list(green[row].values())
+            chars_mandatory.extend(green[row].values())
+            known_positions.extend(green[row].keys())
         if row in orange:
             filtered = filter_orange(filtered, orange[row])
-            chars_needed = chars_needed + list(orange[row].values())
+            chars_mandatory.extend(orange[row].values())
 
-        filtered = match_all_chars(filtered, chars_needed)
+        filtered = match_all_chars(filtered, chars_mandatory)
+
+    print(known_positions)
+    print(grey)
+    filtered = filter_dont_match_at_pos(filtered, grey, known_positions)
 
     filtered = sort_wordlist(filtered, algorithm=algorithm)
 

@@ -5,18 +5,37 @@ import datetime
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
-    dont_match = ""
-    known_positions = {}
-    known_positions_not = []
+    grey = ""
+    green = {}
+    orange = {}
 
     for i in range(1, 7):
         guessed_dict = solver.guess(
             wordlist=wordlist,
-            grey=dont_match,
-            green=known_positions,
-            orange=known_positions_not,
+            grey=grey,
+            green=green,
+            orange=orange,
             algorithm=algorithm,
         )
+
+        if annotate:
+
+            def rowprint(lst):
+                str = ""
+                for row in range(0, 5):
+                    for col in range(0, 5):
+                        if col in lst and row in lst[col]:
+                            str += lst[row][col]
+                        else:
+                            str += "X"
+                    str += "\n"
+                print(str)
+
+            rowprint(green)
+            rowprint(orange)
+            print("grey ", grey)
+            # print("green ", green)
+            # print("orange ", orange)
 
         if len(guessed_dict) == 0:
             print("No words found")
@@ -26,15 +45,18 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
             print(f"\t{guessed}")
         if guessed == word:
             return i
-        for ii, char in enumerate(guessed):
-            if char == word[ii]:
-                known_positions[str(ii)] = char
+        for char_pos, char in enumerate(guessed):
+            k = str(i)
+            if char == word[char_pos]:
+                if k not in green:
+                    green[k] = {}
+                green[k][str(char_pos)] = char
             elif char in word:
-                knp = {}
-                knp[str(ii)] = char
-                known_positions_not.append(knp)
+                if str(i) not in orange:
+                    orange[k] = {}
+                orange[k][str(char_pos)] = char
             if char not in word:
-                dont_match += char
+                grey += char
 
     return -1
 
@@ -71,29 +93,30 @@ def run_test(algorithm="frequency", wordlist_all=False):
 
 
 if __name__ == "__main__":
-    algorithms_available = [
-        "frequency",
-        "position_and_frequency",
-        "position_and_frequency_unique",
-        "combo",
-        "random",
-        "combo_num_words",
-        "entropy",
-    ]
+    # algorithms_available = [
+    #     "frequency",
+    #     "position_and_frequency",
+    #     "position_and_frequency_unique",
+    #     "combo",
+    #     "random",
+    #     "combo_num_words",
+    #     "entropy",
+    # ]
 
-    all_results = []
-    for algorithm in algorithms_available:
-        for wordlist_all in [True, False]:
-            results = run_test(algorithm, wordlist_all)
-            all_results.append(results)
-            print(results)
+    # all_results = []
+    # for algorithm in algorithms_available:
+    #     for wordlist_all in [True, False]:
+    #         results = run_test(algorithm, wordlist_all)
+    #         all_results.append(results)
+    #         print(results)
 
-    suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-    with open(f"../results-{suffix}.json", "w") as outfile:
-        json.dump(all_results, outfile, indent=4)
+    # suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+    # with open(f"../results-{suffix}.json", "w") as outfile:
+    #     json.dump(all_results, outfile, indent=4)
+
+    # above this line is to iterate
 
     # run_test(algorithms_available[1], wordlist_all=False)
 
-    # wordlist = solver.wordlist(False)
-    # print(solve(wordlist, "tight", "position_and_frequency", True))
-    # print(solve(wordlist, "ember", "random"))
+    wordlist = solver.wordlist(False)
+    print(solve(wordlist, "refer", "random", True))
