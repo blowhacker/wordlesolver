@@ -62,7 +62,7 @@ def filter_dont_match_at_pos(words, grey):
     add_word = True
     for word in words:
         for row in grey:
-            for col in grey[row]:            
+            for col in grey[row]:
                 if word[int(col)] == grey[row][col]:
                     add_word = False
                     break
@@ -75,7 +75,7 @@ def filter_dont_match_at_pos(words, grey):
         filtered.append(word)
 
     return words
-            
+
 
 @cached
 def filter_known_letters(words, must_match):
@@ -259,7 +259,7 @@ def guess(
         # exclude.extend(green.values())
         # exclude.extend(orange.values())
         # print("excl ", exclude)
-        filtered = filter_dont_match_at_pos(filtered, grey) 
+        filtered = filter_dont_match_at_pos(filtered, grey)
 
     filtered = sort_wordlist(filtered, algorithm=algorithm)
 
