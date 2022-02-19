@@ -255,14 +255,8 @@ def guess(
 
         filtered = match_all_chars(filtered, chars_mandatory)
 
-        # exclude = []
-        # exclude.extend(green.values())
-        # exclude.extend(orange.values())
-        # print("excl ", exclude)
         filtered = filter_dont_match_at_pos(filtered, grey)
 
     filtered = sort_wordlist(filtered, algorithm=algorithm)
-
-    print(filtered)
 
     return filtered
