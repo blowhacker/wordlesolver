@@ -1,3 +1,4 @@
+from audioop import add
 import math
 import os
 from random import randint
@@ -56,22 +57,25 @@ def filter_dont_match(words, dont_match):
 
 
 @cached
-def filter_dont_match_at_pos(words, dont_match, ignore_pos=[]):
+def filter_dont_match_at_pos(words, grey):
     filtered = []
+    add_word = True
     for word in words:
-        word_copy = ""
-        for pos in range(0, len(word)):
-            if str(pos) not in ignore_pos:
-                word_copy += word[pos]
-        letter_not_found = True
-        for letter in dont_match:
-            letter_not_found = letter_not_found and letter not in word_copy
+        for row in grey:
+            for col in grey[row]:            
+                if word[int(col)] == grey[row][col]:
+                    add_word = False
+                    break
+            if not add_word:
+                break
+        if not add_word:
+            break
 
-        if letter_not_found:
-            filtered.append(word)
+    if add_word:
+        filtered.append(word)
 
-    return filtered
-
+    return words
+            
 
 @cached
 def filter_known_letters(words, must_match):
@@ -251,11 +255,11 @@ def guess(
 
         filtered = match_all_chars(filtered, chars_mandatory)
 
-        exclude = []
-        exclude.extend(green.values())
-        exclude.extend(orange.values())
+        # exclude = []
+        # exclude.extend(green.values())
+        # exclude.extend(orange.values())
         # print("excl ", exclude)
-        # filtered = filter_dont_match_at_pos(filtered, grey, known_positions) 
+        filtered = filter_dont_match_at_pos(filtered, grey) 
 
     filtered = sort_wordlist(filtered, algorithm=algorithm)
 
