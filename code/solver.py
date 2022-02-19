@@ -43,6 +43,7 @@ def char_frequency_by_position(words):
 @cached
 def filter_dont_match(words, dont_match):
     filtered = []
+    dont_match = "".join(dont_match)
     for word in words:
         letter_not_found = True
         for letter in dont_match:
@@ -207,7 +208,9 @@ def match_all_chars(filtered, chars_mandatory):
 
 
 def chars_to_exclude(grey, green, orange):
-    dont_match = list(grey)
+    dont_match = []
+    for ele in grey.values():
+        dont_match.extend(ele.values())
     for x in green.values():
         for c in x.values():
             if c in dont_match:
@@ -222,7 +225,7 @@ def chars_to_exclude(grey, green, orange):
 @cached
 def guess(
     wordlist,
-    grey="",
+    grey={},
     green={},
     orange={},
     algorithm="frequency",
@@ -248,10 +251,14 @@ def guess(
 
         filtered = match_all_chars(filtered, chars_mandatory)
 
-    print(known_positions)
-    print(grey)
-    filtered = filter_dont_match_at_pos(filtered, grey, known_positions)
+        exclude = []
+        exclude.extend(green.values())
+        exclude.extend(orange.values())
+        # print("excl ", exclude)
+        # filtered = filter_dont_match_at_pos(filtered, grey, known_positions) 
 
     filtered = sort_wordlist(filtered, algorithm=algorithm)
+
+    print(filtered)
 
     return filtered

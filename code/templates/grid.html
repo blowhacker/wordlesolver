@@ -245,46 +245,27 @@
 
     function getWords() {
 
-        let orangeTiles = {}
-        document.querySelectorAll('.orange').forEach(ele => {
-            // let pos = ele.id.replace('cell_', '')
+        function getTitlesYX(colour) {
+            let tiles = {}
+            document.querySelectorAll(`.${colour}`).forEach(ele => {
+                let posX = parseInt(ele.id.split('_')[2])
+                let posY = parseInt(ele.id.split('_')[1])
+                if (!tiles[posY]) {
+                    tiles[posY] = {}
+                }
+                tiles[posY][posX] = ele.innerText.toLowerCase()
+            })
+            return tiles
+        }
 
-            let posX = parseInt(ele.id.split('_')[2])
-            let posY = parseInt(ele.id.split('_')[1])
-            if (!orangeTiles[posY]) {
-                orangeTiles[posY] = {}
-            }
-            orangeTiles[posY][posX] = ele.innerText.toLowerCase()
-
-            // let d = {}
-            // d[pos] = ele.innerText.toLowerCase()
-            // orangeTitles.push(d)
-        })
-
-        let greenTiles = {}
-        document.querySelectorAll('.green').forEach(ele => {
-            let posX = parseInt(ele.id.split('_')[2])
-            let posY = parseInt(ele.id.split('_')[1])
-            if (!greenTiles[posY]) {
-                greenTiles[posY] = {}
-            }
-            greenTiles[posY][posX] = ele.innerText.toLowerCase()
-
-
-            // let pos = parseInt(ele.id.split('_')[2])
-            // greenTiles[pos] = ele.innerText.toLowerCase()
-        })
-
-        let greyTiles = ""
-        document.querySelectorAll('.grey').forEach(ele => {
-            let char = ele.innerText.toLowerCase()
-            greyTiles += char
-        })
+        let orangeTiles = getTitlesYX('orange')
+        let greenTiles = getTitlesYX('green')
+        let greyTiles = getTitlesYX('grey')
 
         let params = {
             green: JSON.stringify(greenTiles),
             orange: JSON.stringify(orangeTiles),
-            grey: JSON.stringify([...greyTiles]),
+            grey: JSON.stringify(greyTiles),
             algorithm: document.querySelector("#algorithm").value,
             wordlist: document.querySelector("#wordlist:checked") ? 'wordle_all' : 'full',
         }
