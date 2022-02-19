@@ -15,13 +15,30 @@ def replace_char(string, index, char):
     return string[:index] + char + string[index + 1 :]
 
 
-def get_chars_in_colour(colour):
+def chars_in_colour(colour, as_padded_str=False):
     by_col = {}
     for row in colour:
         for col in colour[row]:
             by_col[col] = colour[row][col]
+    if as_padded_str:
+        padded_str = ""
+        for i in range(0, len(by_col)):
+            if str(i) in by_col:
+                padded_str += by_col[str(i)]
+            else:
+                padded_str += "_"
+        return padded_str
 
     return by_col
+
+def get_cell_colour(word, guess, col):
+    if guess[col] == word[col]:
+        return "green"
+    else:
+        if guess[col] not in replace_char(word, col, "_"):
+            return "grey"
+        else:            
+            return "orange"
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
@@ -37,10 +54,10 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
             orange=orange,
             algorithm=algorithm,
         )
-        # print(try_number)
-        # print("green", json.dumps(green))
-        # print("orange", json.dumps(orange))
-        # print("grey", json.dumps(grey))
+        print(try_number)
+        print("green", json.dumps(green))
+        print("orange", json.dumps(orange))
+        print("grey", json.dumps(grey))
         print(
             f"http://127.0.0.1:5000/solve?green={json.dumps(green)}&orange={json.dumps(orange)}&grey={json.dumps(grey)}&show_query=1"
         )
@@ -49,7 +66,7 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
             print(f"No words found for {word}, using: {algorithm}")
             return -1
         guessed = next(iter(guessed_dict))
-        print(guessed)
+        print("\t" + guessed)
         if annotate:
             print(f"\t{word}\tguess:{guessed}")
         if guessed == word:
@@ -58,12 +75,19 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
             row = str(try_number)
             if char == word[char_pos]:
                 add_to_dict(green, row, str(char_pos), char)
-            if char not in word or (
-                char in get_chars_in_colour(green).values() and char != word[char_pos]
+
+            if char != word[char_pos] and word.count(char) > replace_char(
+                guessed, char_pos, "_"
+            ).count(char):
+                add_to_dict(orange, row, str(char_pos), char)
+
+            if char not in word or ( False
+                # char != word[char_pos]
+                # and word.count(char)
+                # == replace_char(chars_in_colour(green, True), char_pos, "_").count(char)
+                # and word.count(char) == chars_in_colour(green, True).count(char)
             ):
                 add_to_dict(grey, row, str(char_pos), char)
-            elif char in replace_char(word, char_pos, "_") and char != word[char_pos]:
-                add_to_dict(orange, row, str(char_pos), char)
 
     return -1
 
@@ -78,12 +102,14 @@ def run_test(algorithm="frequency", wordlist_all=False):
 
     for i, word in enumerate(wordle_valid):
         tries = solve(wordlist, word, algorithm)
-        print(f"{i}: {word}. Tries: {tries}. Algorithm: {algorithm}")
+        # print(f"{i}: {word}. Tries: {tries}. Algorithm: {algorithm}")
         if tries > 0:
             tries_total += tries
             wins += 1
         else:
-            print(f"{word} not solved. guesses: {tries} Algorithm: {algorithm}")
+            print(
+                f"{word} not solved. guesses: {tries} Algorithm: {algorithm} Full_Wordlist: {wordlist_all}"
+            )
             loses += 1
 
     print(
@@ -127,8 +153,9 @@ if __name__ == "__main__":
 
     # run_all_tests(algorithms_available)
 
-    # run_test(algorithms_available[1], wordlist_all=False)
+    # run_test(algorithms_available[6], wordlist_all=False)
 
-    wordlist = solver.wordlist(True)
-    print(solve(wordlist, "enter", "entropy", False))
-    # run_test("frequency",False)
+    wordlist = solver.wordlist(False)
+    # print(solve(wordlist, "beech", "entropy", False))
+    print(solve(wordlist, "order", "entropy", False))
+    # # run_test("frequency",False)
