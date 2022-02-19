@@ -5,7 +5,7 @@ import datetime
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
-    grey = ""
+    grey = {}
     green = {}
     orange = {}
 
@@ -19,17 +19,16 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
         )
 
         if annotate:
-
             def rowprint(lst):
-                str = ""
+                message = ""
                 for row in range(0, 5):
                     for col in range(0, 5):
                         if col in lst and row in lst[col]:
-                            str += lst[row][col]
+                            message += lst[row][col]
                         else:
-                            str += "X"
-                    str += "\n"
-                print(str)
+                            message += "X"
+                    message += "\n"
+                print(message)
 
             rowprint(green)
             rowprint(orange)
@@ -56,7 +55,9 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
                     orange[k] = {}
                 orange[k][str(char_pos)] = char
             if char not in word:
-                grey += char
+                if str(i) not in grey:
+                    grey[k] = {}
+                grey[k][str(char_pos)] = char
 
     return -1
 
@@ -93,30 +94,30 @@ def run_test(algorithm="frequency", wordlist_all=False):
 
 
 if __name__ == "__main__":
-    # algorithms_available = [
-    #     "frequency",
-    #     "position_and_frequency",
-    #     "position_and_frequency_unique",
-    #     "combo",
-    #     "random",
-    #     "combo_num_words",
-    #     "entropy",
-    # ]
+    algorithms_available = [
+        "frequency",
+        "position_and_frequency",
+        "position_and_frequency_unique",
+        "combo",
+        "random",
+        "combo_num_words",
+        "entropy",
+    ]
 
-    # all_results = []
-    # for algorithm in algorithms_available:
-    #     for wordlist_all in [True, False]:
-    #         results = run_test(algorithm, wordlist_all)
-    #         all_results.append(results)
-    #         print(results)
+    all_results = []
+    for algorithm in algorithms_available:
+        for wordlist_all in [True, False]:
+            results = run_test(algorithm, wordlist_all)
+            all_results.append(results)
+            print(results)
 
-    # suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-    # with open(f"../results-{suffix}.json", "w") as outfile:
-    #     json.dump(all_results, outfile, indent=4)
+    suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+    with open(f"../results-{suffix}.json", "w") as outfile:
+        json.dump(all_results, outfile, indent=4)
 
-    # above this line is to iterate
+    # above this line is to iterate through all tests
 
     # run_test(algorithms_available[1], wordlist_all=False)
 
-    wordlist = solver.wordlist(False)
-    print(solve(wordlist, "refer", "random", True))
+    # wordlist = solver.wordlist(False)
+    # print(solve(wordlist, "refer", "combo_num_words", True))

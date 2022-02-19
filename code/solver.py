@@ -71,7 +71,7 @@ def filter_dont_match_at_pos(words, grey):
         if add_word:
             filtered.append(word)
 
-    return words
+    return filtered
 
 
 @cached
