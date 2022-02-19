@@ -1,4 +1,3 @@
-from audioop import add
 import math
 import os
 from random import randint
@@ -241,7 +240,15 @@ def guess(
 
     known_positions = []
 
-    for row in range(0, 5):
+    max_row = max(
+        [0]
+        + [
+            int(key)
+            for key in list(green.keys()) + list(grey.keys()) + list(orange.keys())
+        ]
+    )
+
+    for row in range(0, max_row + 1):
         row = str(row)
         chars_mandatory = []
         if row in green:

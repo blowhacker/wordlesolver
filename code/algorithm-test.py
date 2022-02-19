@@ -1,7 +1,28 @@
 from hashlib import algorithms_available
+from operator import add
 import solver
 import json
 import datetime
+
+
+def add_to_dict(dict, key, sub_key, value):
+    if key not in dict:
+        dict[key] = {}
+    dict[key][sub_key] = value
+
+
+def replace_char(string, index, char):
+    return string[:index] + char + string[index + 1 :]
+
+
+def get_chars_in_colour(colour):
+    by_col = {}
+    for row in colour:
+        for col in colour[row]:
+            by_col[col] = colour[row][col]
+
+    return by_col
+
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
@@ -9,7 +30,7 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
     green = {}
     orange = {}
 
-    for i in range(1, 7):
+    for try_number in range(0, 101):
         guessed_dict = solver.guess(
             wordlist=wordlist,
             grey=grey,
@@ -17,48 +38,29 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
             orange=orange,
             algorithm=algorithm,
         )
-
-        if annotate:
-
-            def rowprint(lst):
-                message = ""
-                for row in range(0, 5):
-                    for col in range(0, 5):
-                        if col in lst and row in lst[col]:
-                            message += lst[row][col]
-                        else:
-                            message += "X"
-                    message += "\n"
-                print(message)
-
-            rowprint(green)
-            rowprint(orange)
-            print("grey ", grey)
-            # print("green ", green)
-            # print("orange ", orange)
+        print(try_number)
+        print("green", json.dumps(green))
+        print("orange", json.dumps(orange))
+        print("grey", json.dumps(grey))
+        print(f"http://127.0.0.1:5000/solve?green={json.dumps(green)}&orange={json.dumps(orange)}&grey={json.dumps(grey)}&show_query=1")
 
         if len(guessed_dict) == 0:
-            print("No words found")
+            print(f"No words found for {word}, using: {algorithm}")
             return -1
         guessed = next(iter(guessed_dict))
+        print(guessed)
         if annotate:
-            print(f"\t{guessed}")
+            print(f"\t{word}\tguess:{guessed}")
         if guessed == word:
-            return i
+            return try_number
         for char_pos, char in enumerate(guessed):
-            k = str(i)
+            row = str(try_number)
             if char == word[char_pos]:
-                if k not in green:
-                    green[k] = {}
-                green[k][str(char_pos)] = char
-            elif char in word:
-                if str(i) not in orange:
-                    orange[k] = {}
-                orange[k][str(char_pos)] = char
-            if char not in word:
-                if str(i) not in grey:
-                    grey[k] = {}
-                grey[k][str(char_pos)] = char
+                add_to_dict(green, row, str(char_pos), char)            
+            if char not in word or (char in get_chars_in_colour(green).values() and char != word[char_pos]):
+                add_to_dict(grey, row, str(char_pos), char)
+            elif char in replace_char(word, char_pos, "_"):
+                add_to_dict(orange, row, str(char_pos), char)
 
     return -1
 
@@ -73,12 +75,12 @@ def run_test(algorithm="frequency", wordlist_all=False):
 
     for i, word in enumerate(wordle_valid):
         tries = solve(wordlist, word, algorithm)
-        print(f"{i}: {word}. Tries: {tries}")
+        print(f"{i}: {word}. Tries: {tries}. Algorithm: {algorithm}")
         if tries > 0:
             tries_total += tries
             wins += 1
         else:
-            print(f"{word} not solved")
+            print(f"{word} not solved. guesses: {tries} Algorithm: {algorithm}")
             loses += 1
 
     print(
@@ -94,6 +96,21 @@ def run_test(algorithm="frequency", wordlist_all=False):
     }
 
 
+def run_all_tests(algorithms):
+    all_results = []
+    for algorithm in algorithms:
+        for wordlist_all in [True, False]:
+            results = run_test(algorithm, wordlist_all)
+            all_results.append(results)
+            print(results)
+
+    suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
+    with open(f"../results-{suffix}.json", "w") as outfile:
+        json.dump(all_results, outfile, indent=4)
+
+    return all_results
+
+
 if __name__ == "__main__":
     algorithms_available = [
         "frequency",
@@ -105,20 +122,10 @@ if __name__ == "__main__":
         "entropy",
     ]
 
-    all_results = []
-    for algorithm in algorithms_available:
-        for wordlist_all in [True, False]:
-            results = run_test(algorithm, wordlist_all)
-            all_results.append(results)
-            print(results)
-
-    suffix = datetime.datetime.now().strftime("%y%m%d_%H%M%S")
-    with open(f"../results-{suffix}.json", "w") as outfile:
-        json.dump(all_results, outfile, indent=4)
-
-    # above this line is to iterate through all tests
+    # run_all_tests(algorithms_available)
 
     # run_test(algorithms_available[1], wordlist_all=False)
 
-    # wordlist = solver.wordlist(False)
-    # print(solve(wordlist, "refer", "combo_num_words", True))
+    wordlist = solver.wordlist(False)
+    print(solve(wordlist, "yield", "frequency", False))
+    # run_test("frequency",False)
