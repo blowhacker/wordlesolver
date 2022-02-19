@@ -59,8 +59,8 @@ def filter_dont_match(words, dont_match):
 @cached
 def filter_dont_match_at_pos(words, grey):
     filtered = []
-    add_word = True
     for word in words:
+        add_word = True
         for row in grey:
             for col in grey[row]:
                 if word[int(col)] == grey[row][col]:
@@ -68,11 +68,8 @@ def filter_dont_match_at_pos(words, grey):
                     break
             if not add_word:
                 break
-        if not add_word:
-            break
-
-    if add_word:
-        filtered.append(word)
+        if add_word:
+            filtered.append(word)
 
     return words
 
