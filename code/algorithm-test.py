@@ -19,6 +19,7 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
         )
 
         if annotate:
+
             def rowprint(lst):
                 message = ""
                 for row in range(0, 5):

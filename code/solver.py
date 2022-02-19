@@ -56,18 +56,20 @@ def filter_dont_match(words, dont_match):
     return filtered
 
 
+def char_in_word_by_position(word, colour_row_col):
+    for row in colour_row_col:
+        for col in colour_row_col[row]:
+            if word[int(col)] == colour_row_col[row][col]:
+                return True
+
+    return False
+
+
 @cached
 def filter_dont_match_at_pos(words, grey):
     filtered = []
     for word in words:
-        add_word = True
-        for row in grey:
-            for col in grey[row]:
-                if word[int(col)] == grey[row][col]:
-                    add_word = False
-                    break
-            if not add_word:
-                break
+        add_word = not char_in_word_by_position(word, grey)
         if add_word:
             filtered.append(word)
 
