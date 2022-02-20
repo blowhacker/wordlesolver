@@ -31,14 +31,30 @@ def chars_in_colour(colour, as_padded_str=False):
 
     return by_col
 
-def get_cell_colour(word, guess, col):    
-    if guess[col] == word[col]:
+
+def intersect_strings(a, b):
+    result = ""
+    for c in range(0, len(a)):
+        if a[c] == b[c]:
+            result += a[c]
+        else:
+            result += "_"
+    return result
+
+
+def get_cell_colour(word, guess, col):
+    g = guess[col]
+    w = word[col]
+    if g == w:
         return "green"
-    else:
-        if guess[col] in replace_char(word, col, "_") and guess.count(guess[col]) == word.count(guess[col]):
-            return "orange"
-        else:            
-            return "grey"
+    if g not in word:
+        return 'grey'        
+    if g in intersect_strings(word, guess):
+        return 'grey'
+    if guess.count(g) > word.count(g) and guess.find(g) < col:
+        return 'grey'
+        
+    return 'orange'
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
@@ -54,19 +70,20 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
             orange=orange,
             algorithm=algorithm,
         )
-        print(try_number)
-        print("green", json.dumps(green))
-        print("orange", json.dumps(orange))
-        print("grey", json.dumps(grey))
-        print(
-            f"http://127.0.0.1:5000/solve?green={json.dumps(green)}&orange={json.dumps(orange)}&grey={json.dumps(grey)}&show_query=1"
-        )
+        if annotate:
+            print(try_number)
+            print("green", json.dumps(green))
+            print("orange", json.dumps(orange))
+            print("grey", json.dumps(grey))
+            print(
+                f"http://127.0.0.1:5000/solve?green={json.dumps(green)}&orange={json.dumps(orange)}&grey={json.dumps(grey)}&show_query=1"
+            )
 
         if len(guessed_dict) == 0:
             print(f"No words found for {word}, using: {algorithm}")
             return -1
         guessed = next(iter(guessed_dict))
-        print("\t" + guessed)
+        # print("\t" + guessed)
         if annotate:
             print(f"\t{word}\tguess:{guessed}")
         if guessed == word:
@@ -80,7 +97,7 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
                 add_to_dict(orange, row, str(char_pos), char)
             elif cell_colour == "grey":
                 add_to_dict(grey, row, str(char_pos), char)
-            
+
     return -1
 
 
@@ -95,7 +112,7 @@ def run_test(algorithm="frequency", wordlist_all=False):
     for i, word in enumerate(wordle_valid):
         tries = solve(wordlist, word, algorithm)
         # print(f"{i}: {word}. Tries: {tries}. Algorithm: {algorithm}")
-        if tries > 0:
+        if tries >= 0:
             tries_total += tries
             wins += 1
         else:
@@ -145,9 +162,9 @@ if __name__ == "__main__":
 
     # run_all_tests(algorithms_available)
 
-    # run_test(algorithms_available[6], wordlist_all=False)
+    run_test(algorithms_available[6], wordlist_all=False)
 
-    wordlist = solver.wordlist(False)
-    print(solve(wordlist, "beech", "entropy", False))
-    # print(solve(wordlist, "order", "entropy", False))
+    # wordlist = solver.wordlist(False)
+    # print(solve(wordlist, "igloo", "entropy", True))
+    # print(solve(wordlist, "utter", "entropy", True))
     # # run_test("frequency",False)
