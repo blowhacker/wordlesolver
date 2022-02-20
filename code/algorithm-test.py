@@ -31,14 +31,14 @@ def chars_in_colour(colour, as_padded_str=False):
 
     return by_col
 
-def get_cell_colour(word, guess, col):
+def get_cell_colour(word, guess, col):    
     if guess[col] == word[col]:
         return "green"
     else:
-        if guess[col] not in replace_char(word, col, "_"):
-            return "grey"
-        else:            
+        if guess[col] in replace_char(word, col, "_") and guess.count(guess[col]) == word.count(guess[col]):
             return "orange"
+        else:            
+            return "grey"
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
@@ -72,23 +72,15 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
         if guessed == word:
             return try_number
         for char_pos, char in enumerate(guessed):
+            cell_colour = get_cell_colour(word, guessed, char_pos)
             row = str(try_number)
-            if char == word[char_pos]:
+            if cell_colour == "green":
                 add_to_dict(green, row, str(char_pos), char)
-
-            if char != word[char_pos] and word.count(char) > replace_char(
-                guessed, char_pos, "_"
-            ).count(char):
+            elif cell_colour == "orange":
                 add_to_dict(orange, row, str(char_pos), char)
-
-            if char not in word or ( False
-                # char != word[char_pos]
-                # and word.count(char)
-                # == replace_char(chars_in_colour(green, True), char_pos, "_").count(char)
-                # and word.count(char) == chars_in_colour(green, True).count(char)
-            ):
+            elif cell_colour == "grey":
                 add_to_dict(grey, row, str(char_pos), char)
-
+            
     return -1
 
 
@@ -156,6 +148,6 @@ if __name__ == "__main__":
     # run_test(algorithms_available[6], wordlist_all=False)
 
     wordlist = solver.wordlist(False)
-    # print(solve(wordlist, "beech", "entropy", False))
-    print(solve(wordlist, "order", "entropy", False))
+    print(solve(wordlist, "beech", "entropy", False))
+    # print(solve(wordlist, "order", "entropy", False))
     # # run_test("frequency",False)
