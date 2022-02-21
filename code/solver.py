@@ -157,38 +157,40 @@ def sort_wordlist_entropy(words):
 
 @cached
 def sort_wordlist(words, algorithm="frequency"):
-    if algorithm == "position_and_frequency":
-        return sort_wordlist_position_frequency(words, favour_unique=False)
-    elif algorithm == "entropy":
-        return sort_wordlist_entropy(words)
-    elif algorithm == "position_and_frequency_unique":
-        return sort_wordlist_position_frequency(words)
-    elif algorithm == "combo":
-        bypos = sort_wordlist_position_frequency(words)
-        byfreq = sort_wordlist_frequency(words)
-        merged = {}
-        for word in bypos:
-            merged[word] = bypos[word] * bypos[word] * byfreq[word]
-        return dict(sorted(merged.items(), key=lambda item: -item[1]))
-    elif algorithm == "combo_num_words":
-        bypos = sort_wordlist_position_frequency(words)
-        byfreq = sort_wordlist_frequency(words)
-        merged = {}
-        for word in bypos:
-            merged[word] = bypos[word] + byfreq[word] / (
-                1 + math.log(1 + len(words))
-            )  # looks good :)
-        return dict(sorted(merged.items(), key=lambda item: -item[1]))
 
-    elif algorithm == "frequency":
-        return sort_wordlist_frequency(words)
-    elif algorithm == "random":
-        ranked = {}
-        for word in words:
-            ranked[word] = randint(0, len(words))
-        return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+    match algorithm:
+        case "position_and_frequency":
+            return sort_wordlist_position_frequency(words, favour_unique=False)
+        case "entropy":
+            return sort_wordlist_entropy(words)
+        case "position_and_frequency_unique":
+            return sort_wordlist_position_frequency(words)
+        case "combo":
+            bypos = sort_wordlist_position_frequency(words)
+            byfreq = sort_wordlist_frequency(words)
+            merged = {}
+            for word in bypos:
+                merged[word] = bypos[word] * bypos[word] * byfreq[word]
+            return dict(sorted(merged.items(), key=lambda item: -item[1]))
+        case "combo_num_words":
+            bypos = sort_wordlist_position_frequency(words)
+            byfreq = sort_wordlist_frequency(words)
+            merged = {}
+            for word in bypos:
+                merged[word] = bypos[word] + byfreq[word] / (
+                    1 + math.log(1 + len(words))
+                )  # looks good :)
+            return dict(sorted(merged.items(), key=lambda item: -item[1]))
 
-    return {}
+        case "frequency":
+            return sort_wordlist_frequency(words)
+        case "random":
+            ranked = {}
+            for word in words:
+                ranked[word] = randint(0, len(words))
+            return dict(sorted(ranked.items(), key=lambda item: -item[1]))
+        case default:
+            return {}
 
 
 @cached

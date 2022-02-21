@@ -48,13 +48,13 @@ def get_cell_colour(word, guess, col):
     if g == w:
         return "green"
     if g not in word:
-        return 'grey'        
+        return "grey"
     if g in intersect_strings(word, guess):
-        return 'grey'
+        return "grey"
     if guess.count(g) > word.count(g) and guess.find(g) < col:
-        return 'grey'
-        
-    return 'orange'
+        return "grey"
+
+    return "orange"
 
 
 def solve(wordlist, word, algorithm="frequency", annotate=False):
@@ -62,7 +62,7 @@ def solve(wordlist, word, algorithm="frequency", annotate=False):
     green = {}
     orange = {}
 
-    for try_number in range(0, 101):
+    for try_number in range(0, 6):
         guessed_dict = solver.guess(
             wordlist=wordlist,
             grey=grey,
@@ -160,9 +160,9 @@ if __name__ == "__main__":
         "entropy",
     ]
 
-    # run_all_tests(algorithms_available)
+    run_all_tests(algorithms_available)
 
-    run_test(algorithms_available[6], wordlist_all=False)
+    # run_test(algorithms_available[6], wordlist_all=False)
 
     # wordlist = solver.wordlist(False)
     # print(solve(wordlist, "igloo", "entropy", True))
